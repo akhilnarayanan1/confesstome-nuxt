@@ -1,0 +1,28 @@
+import { defineNuxtConfig } from 'nuxt3'
+
+// https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
+export default defineNuxtConfig({
+    build: {
+        postcss: {
+            postcssOptions : {
+                plugins: {
+                    tailwindcss: {},
+                    autoprefixer: {},
+                },
+            }
+        }
+    },
+    css: [
+        '@/assets/css/main.css',
+    ],
+    vite: {
+        build: {
+            minify: 'terser',
+            terserOptions: {
+                format: {
+                    comments: false,
+                }
+            }
+        }
+    }
+})

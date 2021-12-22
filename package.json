@@ -1,23 +1,20 @@
 {
-  "name": "confessto-me",
-  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
-  },
-  "dependencies": {
-    "daisyui": "^1.16.2",
-    "vue": "^3.2.16",
-    "vue-router": "^4.0.12"
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.9.3",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.3.11",
-    "tailwindcss": "^2.2.19",
-    "typescript": "^4.4.3",
-    "vite": "^2.6.4",
-    "vue-tsc": "^0.3.0"
+    "@types/jquery": "^3.5.10",
+    "@types/lodash": "^4.14.178",
+    "nuxt3": "latest",
+    "tailwindcss": "^3.0.2"
+  },
+  "dependencies": {
+    "daisyui": "^1.16.5",
+    "firebase": "^9.6.1",
+    "jquery": "^3.6.0",
+    "lodash": "^4.17.21"
   }
 }
