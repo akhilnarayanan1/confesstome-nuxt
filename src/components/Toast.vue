@@ -2,21 +2,13 @@
   <div v-if="toasts?.length"  class="flex justify-center md:justify-end">
     <div class="fixed bottom-0">
       <transition-group name="list">
-        <div v-for="toast in toasts" :key="toast.id">
-          <div :class="toast.type==='error'? 
-              'alert text-red-500 bg-red-50 rounded-md m-2':
-          toast.type==='success'?
-              'alert text-green-500 bg-green-50 rounded-md m-2':
-          toast.type==='warning'?
-              'alert text-yellow-500 bg-yellow-50 rounded-md m-2':
-              'alert text-gray-500 bg-gray-50 rounded-md m-2'
-          ">
-            <div class="flex-1">
-              <label v-if="toast.isHTML" v-html="toast.message"></label>
-              <label v-else>{{ toast.message }}</label>
-            </div>
+        <div v-for="toast in toasts" :key="toast.id" class="m-2">
+          <div :class="{'alert shadow-lg text-white':true, 'alert-error': toast.type==='error',
+          'alert-success': toast.type==='success', 'alert-warning': toast.type==='warning'}">
+            <div><span>{{ toast.message }}</span></div>
             <div v-if="!toast.duration" class="flex-none">
-              <button @click="removeToast(toast.id)" class="btn btn-sm btn-ghost">CLOSE</button>
+              <button v-if="toast.run" @click="toast.run.feature" class="btn btn-sm btn-ghost">{{ toast.run.message }}</button>
+              <button @click="removeToast(toast.id)" class="btn btn-sm">CLOSE</button>
             </div>
           </div>
         </div>
@@ -33,7 +25,7 @@
   const removeToast = (id: number) =>{
     const isOnIndex = (_.findIndex(toasts.value, {id: id}));
     toasts.value.splice(isOnIndex, 1);
-  }
+  };
 </script>
 
 

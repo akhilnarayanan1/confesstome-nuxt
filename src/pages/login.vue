@@ -40,10 +40,9 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import $ from "jquery";
   import { AlertData, ToastData, LoginData } from "@/assets/js/types";
   import { changedKeys } from "@/assets/js/functions";
-  import { signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+  import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
     
   let loading: { login: boolean } = reactive({ login: false });
 
@@ -120,30 +119,16 @@
     .then((userCredential) => {
       loading.login = false;
       if (userCredential.user.emailVerified) {
-        router.replace({name: "dashboard",})
+        router.replace({name: "dashboard",});
       } else {
         addToast({
-          message: `Please verify your email 📧 address before login.
-            <button class="btn btn-sm btn-ghost" id="resendVerificationEmail">RESEND EMAIL</button> 
-          `,
-          isHTML: true,
+          message: `Please verify your email 📧 address before login. If you have not received the email.`,
+          run: { 
+            feature: () => sendVerificationEmail(userCredential.user),
+            message: "RESEND EMAIL",
+          },
           type: "error",
         } as ToastData);
-        $(document).on("click", "#resendVerificationEmail", ()=>{
-          sendEmailVerification(userCredential.user).then(()=>{
-            addToast({
-              message: "Verification email has been sent. Please check your email",
-              type: "success",
-              duration: 2000,
-            } as ToastData);
-          }).catch((err)=>{
-            addToast({
-              message: err,
-              type: "error",
-              duration: 2000,
-            } as ToastData);
-          });
-        });  
       };
     })
     .catch((err) => {
@@ -180,6 +165,22 @@
       }
     });
       
+  };
+
+  const sendVerificationEmail = (user: User) => {
+    sendEmailVerification(user).then(()=>{
+      addToast({
+        message: "Verification email has been sent. Please check your email",
+        type: "success",
+        duration: 2000,
+      } as ToastData);
+    }).catch((err)=>{
+      addToast({
+        message: err,
+        type: "error",
+        duration: 2000,
+      } as ToastData);
+    });
   };
 
 </script>

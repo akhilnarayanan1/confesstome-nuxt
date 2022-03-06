@@ -8,7 +8,10 @@ interface AlertData{
 interface ToastData{
   id?: number,
   message: string,
-  isHTML: false | boolean,
+  run?: {
+    feature: () => void,
+    message: string,
+  },
   type: 'error' | 'success'| 'warning' | string,
   duration?: number,
 };
