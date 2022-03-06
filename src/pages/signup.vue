@@ -55,6 +55,8 @@
   
   let loading: { signup: boolean } = reactive({ signup: false });
 
+  const router = useRouter();
+
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
@@ -180,6 +182,7 @@
           message: "Account created successfully. Please verify your email 📧 & login to continue.",
           type: "success",
         } as ToastData);
+        router.replace({name: "login",});
       } catch (error) {
         addToast({
           message: "Error sending verification email. Try login.",
