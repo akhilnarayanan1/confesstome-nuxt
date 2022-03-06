@@ -175,11 +175,22 @@
         duration: 2000,
       } as ToastData);
     }).catch((err)=>{
-      addToast({
-        message: err,
-        type: "error",
-        duration: 2000,
-      } as ToastData);
+      switch (err.code) {
+        case "auth/too-many-requests":
+          addToast({
+            message: "Calm down. You are trying to too many times",
+            type: "error",
+            duration: 2000,
+          } as ToastData);
+          break;
+        default:
+          addToast({
+            message: err,
+            type: "error",
+            duration: 2000,
+          } as ToastData);
+          break;
+      }
     });
   };
 
