@@ -6,7 +6,6 @@
     "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.14",
     "@types/lodash": "^4.14.179",
     "nuxt3": "latest",
     "tailwindcss": "^3.0.23"
@@ -14,7 +13,6 @@
   "dependencies": {
     "daisyui": "^2.6.0",
     "firebase": "^9.6.8",
-    "jquery": "^3.6.0",
     "lodash": "^4.17.21"
   }
 }
