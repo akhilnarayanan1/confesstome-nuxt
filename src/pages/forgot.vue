@@ -108,7 +108,7 @@
       switch(err.code) {
         case "auth/too-many-requests":
           addFieldAlert({
-            message: "Calm down. You are trying to login too many times",
+            message: "Calm down. You are trying to too many times",
             type: "error",
             source: "server",
             fieldid: "forgot_email",
