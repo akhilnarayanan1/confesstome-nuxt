@@ -122,7 +122,7 @@
         router.replace({name: "dashboard",});
       } else {
         addToast({
-          message: `Please verify your email 📧 address before login. If you have not received the email.`,
+          message: `Please verify your email 📧 address before login.`,
           run: { 
             feature: () => sendVerificationEmail(userCredential.user),
             message: "RESEND EMAIL",
