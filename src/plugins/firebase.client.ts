@@ -29,8 +29,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   const auth = initializeAuth(app, {
     persistence: [indexedDBLocalPersistence, browserSessionPersistence, browserLocalPersistence],
   });
+  const db = getFirestore(app);
 
   nuxtApp.provide("firebaseApp", app);
   nuxtApp.provide("firebaseAuth", auth);
-  nuxtApp.provide("firebaseDB", getFirestore(app));
+  nuxtApp.provide("firebaseDB", db);
 });

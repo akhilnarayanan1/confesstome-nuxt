@@ -32,7 +32,7 @@ export const getUserDataPromised = (): Promise<User> => {
       const unsubscribe = onAuthStateChanged($firebaseAuth, (user: User) => {
         resolve(user);
         unsubscribe();
-      })
+      });
     } catch(err) {
       reject(err);
     };
