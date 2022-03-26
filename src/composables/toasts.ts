@@ -11,6 +11,9 @@ export const addToast = (toast: ToastData) => {
         toasts().value.splice(isOnIndex, 1);
     }, toast.duration) : null;
     toasts().value.push(toast);
+    if (_.findIndex(toasts().value, 'duration') < 0) {
+        toasts().value = toasts().value.slice(-1);
+    };
 };
 
-export const getToasts = () => computed(()=>(useState<ToastData[]>("toasts"))).value;
+export const getToasts = () => computed(()=>toasts()).value;
