@@ -36,6 +36,11 @@ interface ResetPasswordData{
   reset_confirm_password: string,
 };
 
+interface UpdateData{
+  update_name: string,
+  update_username: string,
+}
+
 export {
   AlertData,
   ToastData,
@@ -43,4 +48,5 @@ export {
   LoginData,
   ForgotPasswordData,
   ResetPasswordData,
+  UpdateData,
 };
