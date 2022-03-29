@@ -17,3 +17,5 @@ export const addToast = (toast: ToastData) => {
 };
 
 export const getToasts = () => computed(()=>toasts()).value;
+
+export const clearToasts = () => toasts().value.length = 0;
