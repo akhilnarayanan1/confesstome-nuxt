@@ -42,13 +42,14 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { UpdateData, AlertData } from "@/assets/js/types";
+  import { UpdateData, AlertData, ToastData } from "@/assets/js/types";
   import { changedKeys } from "@/assets/js/functions";
   import { doc, getDoc, setDoc, query, collection, where, orderBy, limit, serverTimestamp } from "firebase/firestore"; 
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
+  clearToasts();
   
   const { $firebaseDB } = useNuxtApp();
   
@@ -143,6 +144,14 @@
     });
 
     loading.continue = false;
+
+    completeProfileModal.open = false;
+
+    addToast({
+      message: "Profile updated successfully!",
+      type: "success",
+      duration: 2000,
+    } as ToastData);
 
   };
 
