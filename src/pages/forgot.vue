@@ -40,6 +40,7 @@
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
+  clearToasts();
 
   const { $firebaseAuth } = useNuxtApp();
   const forgot_email = ref("");
