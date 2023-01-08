@@ -29,10 +29,8 @@ export const getUserDataPromised = (): Promise<User> => {
   const { $firebaseAuth } = useNuxtApp();
   return new Promise((resolve, reject) => {
     try {
-      const unsubscribe = onAuthStateChanged($firebaseAuth, (user: User) => {
-        resolve(user);
-        unsubscribe();
-      });
+      const unsubscribe = onAuthStateChanged($firebaseAuth, (user) => { if (user) resolve(user) });
+      unsubscribe();
     } catch(err) {
       reject(err);
     };
