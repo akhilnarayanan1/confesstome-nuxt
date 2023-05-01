@@ -10,7 +10,7 @@
           <div class="form-control">
             <div class="input-group border rounded-lg">
               <span class="bg-transparent">📧</span>
-              <input v-model="signup_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
+              <input v-model="form.signup_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
             </div>  
             <InputLabel labelName="signup_email"></InputLabel>
           </div> 
@@ -18,14 +18,14 @@
           <div class="form-control">
             <div class="input-group border rounded-lg">
               <span class="bg-transparent">🔒</span>
-              <input v-model="signup_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
+              <input v-model="form.signup_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
             </div>  
             <InputLabel labelName="signup_password"/>
           </div> 
           <div class="form-control">
             <div class="input-group border rounded-lg">
               <span class="bg-transparent">🔒</span>
-              <input v-model="signup_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
+              <input v-model="form.signup_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
             </div>  
             <InputLabel labelName="signup_confirm_password"/>
           </div> 
@@ -49,59 +49,32 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { changedKeys } from "@/assets/js/functions";
-  import { AlertData, ToastData, SignupData } from "@/assets/js/types";
+  import { AlertData, ToastData } from "@/assets/js/types";
   import { linkWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
   
-  let loading: { signup: boolean } = reactive({ signup: false });
+  let loading = reactive({ signup: false });
 
   const router = useRouter();
+  const user = getUserData();
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
   clearToasts();
 
-  const user = getUserData();
-  const signup_email = ref("");
-  const signup_password = ref("");
-  const signup_confirm_password = ref("");
-
-  //Create an object with computed values of the fields
-  const fieldProps = computed(() => {
-    return {
-      signup_email: signup_email.value,
-      signup_password: signup_password.value,
-      signup_confirm_password: signup_confirm_password.value,
-    };
+  //Create a form
+  const form = reactive({
+    signup_email: '',
+    signup_password: '',
+    signup_confirm_password: ''
   });
 
-  watch(() => _.cloneDeep(fieldProps.value),
-  (newval, preval) => {
-    //Find and delete any alerts that are no longer relevant
-    const changedKey = changedKeys(newval, preval);
-    for (let i=0; i< changedKey.length; i++) {
-      const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
-      if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
-    };
-    //Match password again on input change
-    if (changedKey.includes("signup_confirm_password")) {
-      const signupForm = new SignupForm(newval);
-      signupForm.passwordMatcher();
-    };
-  })
+  //Watch and clear any pending alert on field while typing on to the field
+  watchAlert(form);
 
   class SignupForm {
-    signup_email: string;
-    signup_password: string;
-    signup_confirm_password: string;
-    constructor (props: SignupData) {
-      this.signup_email = props.signup_email;
-      this.signup_password = props.signup_password;
-      this.signup_confirm_password = props.signup_confirm_password;
-    };
     checkRequiredFields() {
-      if(this.signup_password.length < 6){
+      if(form.signup_password.length < 6){
         addFieldAlert({
           message: "Password must be at least 6 characters",
           type: "error",
@@ -109,7 +82,7 @@
           fieldid: "signup_password",
         } as AlertData);
       };
-      if(this.signup_confirm_password.length < 6){
+      if(form.signup_confirm_password.length < 6){
         addFieldAlert({
           message: "Password must be at least 6 characters",
           fieldid: "signup_confirm_password",
@@ -117,7 +90,7 @@
           type: "error",
         } as AlertData);
       };
-      if(this.signup_email.length <= 0){
+      if(form.signup_email.length <= 0){
         addFieldAlert({
           message: "Email is required",
           fieldid: "signup_email",
@@ -128,16 +101,16 @@
     };
 
     passwordMatcher() {
-      if ((this.signup_password.length >= 6) && 
-      (this.signup_password === this.signup_confirm_password)) {
+      if ((form.signup_password.length >= 6) && 
+      (form.signup_password === form.signup_confirm_password)) {
         addFieldAlert({
           message: "Password matched",
           fieldid: "signup_confirm_password",
           source: "ui",
           type: "success",
         } as AlertData);
-      } else if ((this.signup_password.length >= 6) && 
-      (this.signup_password !== this.signup_confirm_password)) {
+      } else if ((form.signup_password.length >= 6) && 
+      (form.signup_password !== form.signup_confirm_password)) {
         addFieldAlert({
             message: "Passwords do not match",
             fieldid: "signup_confirm_password",
@@ -169,11 +142,11 @@
     };
 
     //Stop processing if any UI error
-    const signupForm = new SignupForm(fieldProps.value);
+    const signupForm = new SignupForm();
     if(!signupForm.checkFormValid()) return;
 
     loading.signup = true;
-    const credential = EmailAuthProvider.credential(signup_email.value, signup_password.value);
+    const credential = EmailAuthProvider.credential(form.signup_email, form.signup_password);
     linkWithCredential(user.value, credential)
     .then(async (userCredential) => {
       try{

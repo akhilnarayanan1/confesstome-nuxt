@@ -10,7 +10,7 @@
         <div class="form-control">
           <div class="input-group border rounded-lg">
             <span class="bg-transparent">📧</span>
-            <input v-model="login_email" type="email" placeholder="Enter your e-mail" class="w-full input">
+            <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="w-full input">
           </div>  
           <InputLabel labelName="login_email"/>
         </div> 
@@ -18,7 +18,7 @@
         <div class="form-control">
           <div class="input-group border rounded-lg">
             <span class="bg-transparent">🔒</span>
-            <input autocomplete="false" v-model="login_password" type="password" placeholder="Enter password" class="w-full input"> 
+            <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="w-full input"> 
           </div>  
           <InputLabel labelName="login_password"/>
         </div> 
@@ -40,8 +40,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ToastData, LoginData } from "@/assets/js/types";
-  import { changedKeys } from "@/assets/js/functions";
+  import { AlertData, ToastData } from "@/assets/js/types";
   import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
     
   let loading: { login: boolean } = reactive({ login: false });
@@ -54,36 +53,19 @@
   clearToasts();
 
   const { $firebaseAuth } = useNuxtApp();
-  const login_email = ref("");
-  const login_password = ref("");
-
-  //Create an object with computed values of the fields
-  const fieldProps = computed(() => {
-    return {
-      login_email: login_email.value,
-      login_password: login_password.value,
-    };
+  
+  //Create a form
+  const form = reactive({
+    login_email: '',
+    login_password: ''
   });
 
-  watch(() => _.cloneDeep(fieldProps.value),
-  (newval, preval) => {
-    //Find and delete any alerts that are no longer relevant
-    const changedKey = changedKeys(newval, preval);
-    for (let i=0; i< changedKey.length; i++) {
-      const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
-      if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
-    };
-  });
+  //Watch and clear any pending alert on field while typing on to the field
+  watchAlert(form);
 
   class LoginForm {
-    login_email: string;
-    login_password: string;
-    constructor(props: LoginData){
-      this.login_email = props.login_email;
-      this.login_password = props.login_password;
-    }
     checkRequiredFields(){
-      if(this.login_email.length <= 0){
+      if(form.login_email.length <= 0){
         addFieldAlert({
           message: "Email is required",
           type: "error",
@@ -91,7 +73,7 @@
           fieldid: "login_email",
         } as AlertData);
       };
-      if (this.login_password.length <= 0) {
+      if (form.login_password.length <= 0) {
         addFieldAlert({
           message: "Password is reqired",
           type: "error",
@@ -112,11 +94,11 @@
   const loginAccount = () => {
 
     //Stop processing if any UI error
-    const loginForm = new LoginForm(fieldProps.value);
+    const loginForm = new LoginForm();
     if(!loginForm.checkFormValid()) return;
 
     loading.login = true;
-    signInWithEmailAndPassword($firebaseAuth, login_email.value, login_password.value)
+    signInWithEmailAndPassword($firebaseAuth, form.login_email, form.login_password)
     .then((userCredential) => {
       loading.login = false;
       if (userCredential.user.emailVerified) {

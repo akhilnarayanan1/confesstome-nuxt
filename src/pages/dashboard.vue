@@ -10,7 +10,7 @@
         <div class="form-control">
           <div class="input-group border rounded-lg">
             <span class="bg-transparent">🤠</span>
-            <input v-model="update_name" type="text" placeholder="Enter your name" class="w-full input">
+            <input v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input">
           </div>  
           <InputLabel labelName="update_name"/>
         </div> 
@@ -18,7 +18,7 @@
         <div class="form-control">
           <div class="input-group border rounded-lg">
             <span class="bg-transparent">🩸</span>
-            <input autocomplete="false" v-model="update_username" type="text" placeholder="Choose a username" class="w-full input"> 
+            <input autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input"> 
           </div>  
           <InputLabel labelName="update_username"/>
         </div> 
@@ -42,9 +42,8 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { UpdateData, AlertData, ToastData } from "@/assets/js/types";
-  import { changedKeys } from "@/assets/js/functions";
-  import { doc, getDoc, setDoc, query, collection, where, orderBy, limit, serverTimestamp } from "firebase/firestore"; 
+  import { AlertData, ToastData } from "@/assets/js/types";
+  import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
@@ -56,36 +55,18 @@
   const loading = reactive({ continue: false });
   const completeProfileModal = reactive({ loading:true, open: false });
 
-  const update_name = ref("");
-  const update_username = ref("");
-
-  //Create an object with computed values of the fields
-  const fieldProps = computed(() => {
-    return {
-      update_name: update_name.value,
-      update_username: update_username.value,
-    };
+  //Create a form
+  const form = reactive({
+    update_name: '',
+    update_username: ''
   });
 
-  watch(() => _.cloneDeep(fieldProps.value),
-  (newval, preval) => {
-    //Find and delete any alerts that are no longer relevant
-    const changedKey = changedKeys(newval, preval);
-    for (let i=0; i< changedKey.length; i++) {
-      const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
-      if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
-    };
-  });
+  //Watch and clear any pending alert on field while typing on to the field
+  watchAlert(form);
 
   class CompleteProfileForm {
-    update_name: string;
-    update_username: string;
-    constructor(props: UpdateData){
-      this.update_name = props.update_name;
-      this.update_username = props.update_username;
-    }
     checkRequiredFields(){
-      if(this.update_name.length <= 0){
+      if(form.update_name.length <= 0){
         addFieldAlert({
           message: "Name is required",
           type: "error",
@@ -93,7 +74,7 @@
           fieldid: "update_name",
         } as AlertData);
       };
-      // if(this.update_name.length <= 2){ // set REGEX
+      // if(form.update_name.length <= 2){ // set REGEX
       //   addFieldAlert({
       //     message: "Name should be atleast 3 characters long",
       //     type: "error",
@@ -101,7 +82,7 @@
       //     fieldid: "update_name",
       //   } as AlertData);
       // };
-      if (this.update_username.length <= 0) {
+      if (form.update_username.length <= 0) {
         addFieldAlert({
           message: "Username is reqired",
           type: "error",
@@ -109,7 +90,7 @@
           fieldid: "update_username",
         } as AlertData);
       };
-      // if (this.update_username.length <= 0) { // set REGEX
+      // if (form.update_username.length <= 0) { // set REGEX
       //   addFieldAlert({
       //     message: "Username is reqired",
       //     type: "error",
@@ -130,7 +111,7 @@
   const createAccount = async () => {
 
     //Stop processing if any UI error
-    const completeProfileForm = new CompleteProfileForm(fieldProps.value);
+    const completeProfileForm = new CompleteProfileForm();
     if(!completeProfileForm.checkFormValid()) return;
 
     loading.continue = true;
@@ -138,8 +119,8 @@
     const user = await getUserDataPromised();
 
     await setDoc(doc($firebaseDB, "users", user.uid), {
-      name: update_name.value,
-      username: update_username.value,
+      name: form.update_name,
+      username: form.update_username,
       createdOn: serverTimestamp(),
     });
 

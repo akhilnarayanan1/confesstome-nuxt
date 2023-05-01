@@ -28,14 +28,14 @@
               <div class="form-control">
                 <div class="input-group border rounded-lg">
                   <span class="bg-transparent">🔒</span>
-                  <input v-model="reset_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
+                  <input v-model="form.reset_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
                 </div>  
                 <InputLabel labelName="reset_password"></InputLabel>
               </div> 
               <div class="form-control">
                 <div class="input-group border rounded-lg">
                   <span class="bg-transparent">🔒</span>
-                  <input v-model="reset_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
+                  <input v-model="form.reset_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
                 </div>  
                 <InputLabel labelName="reset_confirm_password"/>
               </div> 
@@ -61,8 +61,8 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ResetPasswordData, ToastData } from "@/assets/js/types";
-  import { changedKeys, maskMail } from "@/assets/js/functions";
+  import { AlertData, ToastData } from "@/assets/js/types";
+  import { maskMail } from "@/assets/js/functions";
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
 
   const loading: { data: boolean, reset: boolean } = reactive({ data: false, reset: false });
@@ -82,36 +82,37 @@
   const continueUrl = query.continueUrl?.toString();
   const lang = query.lang?.toString() || "en";
 
-  const reset_password = ref("");
-  const reset_confirm_password = ref("");
+  // const reset_password = ref("");
+  // const reset_confirm_password = ref("");
   const message = ref("");
   const invalidOrExpired = ref(false);
   const maskedEmail = ref("");
 
-  //Create an object with computed values of the fields
-  const fieldProps = computed(() => {
-    return {
-      reset_password: reset_password.value,
-      reset_confirm_password: reset_confirm_password.value,
-    };
+  //Create a form
+  const form = reactive({
+    reset_password: '',
+    reset_confirm_password: ''
   });
 
-  watch(() => _.cloneDeep(fieldProps.value),
-  (newval, preval) => {
-    //Find and delete any alerts that are no longer relevant
-    const changedKey = changedKeys(newval, preval);
-    for (let i=0; i< changedKey.length; i++) {
-      const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
-      if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
-    };
-    //Match password again on input change
-    if (changedKey.includes("reset_confirm_password")) {
-      const resetPasswordForm = new ResetPasswordForm(newval);
-      resetPasswordForm.passwordMatcher();
-    };
-  });
+  //Watch and clear any pending alert on field while typing on to the field
+  watchAlert(form);
 
-  const handleResetPassword = (actionCode: string, continueUrl: string, lang: string) => {
+  // watch(() => _.cloneDeep(fieldProps.value),
+  // (newval, preval) => {
+  //   //Find and delete any alerts that are no longer relevant
+  //   const changedKey = changedKeys(newval, preval);
+  //   for (let i=0; i< changedKey.length; i++) {
+  //     const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
+  //     if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
+  //   };
+  //   //Match password again on input change
+  //   if (changedKey.includes("reset_confirm_password")) {
+  //     const resetPasswordForm = new ResetPasswordForm(newval);
+  //     resetPasswordForm.passwordMatcher();
+  //   };
+  // });
+
+  const handleResetPassword = (actionCode: string, continueUrl: string | undefined, lang: string) => {
     verifyPasswordResetCode($firebaseAuth, actionCode).then((email) => {
       loading.data = false;
       maskedEmail.value = maskMail(email);
@@ -130,7 +131,7 @@
     });
   };
 
-  const handleVerifyEmail = (actionCode: string, continueUrl: string, lang: string) => {
+  const handleVerifyEmail = (actionCode: string, continueUrl: string | undefined, lang: string) => {
     applyActionCode($firebaseAuth, actionCode).then(() => {
       loading.data = false;
     }).catch((err) => {
@@ -162,16 +163,8 @@
   };
 
   class ResetPasswordForm {
-    reset_password: string;
-    reset_confirm_password: string;
-
-    constructor(props: ResetPasswordData){
-      this.reset_password = props.reset_password;
-      this.reset_confirm_password = props.reset_confirm_password;
-    };
-
     checkRequiredFields() {
-      if (this.reset_password.length < 6) {
+      if (form.reset_password.length < 6) {
         addFieldAlert({
             message: "Password must be at least 6 characters",
             type: "error",
@@ -179,7 +172,7 @@
             fieldid: "reset_password",
         } as AlertData);
       };
-      if (this.reset_confirm_password.length < 6) {
+      if (form.reset_confirm_password.length < 6) {
         addFieldAlert({
             message: "Password must be at least 6 characters",
             fieldid: "reset_confirm_password",
@@ -190,16 +183,16 @@
     };
 
     passwordMatcher() {
-      if ((this.reset_password.length >= 6) && 
-      (this.reset_password === this.reset_confirm_password)) {
+      if ((form.reset_password.length >= 6) && 
+      (form.reset_password === form.reset_confirm_password)) {
         addFieldAlert({
           message: "Password matched",
           fieldid: "reset_confirm_password",
           source: "ui",
           type: "success",
         } as AlertData);
-      }else if ((this.reset_password.length >= 6) && 
-      (this.reset_password !== this.reset_confirm_password)) {
+      }else if ((form.reset_password.length >= 6) && 
+      (form.reset_password !== form.reset_confirm_password)) {
         addFieldAlert({
           message: "Passwords do not match",
           fieldid: "reset_confirm_password",
@@ -223,12 +216,12 @@
   const resetPassword = () => {
 
     //Stop processing if any UI error
-    const resetPasswordForm = new ResetPasswordForm(fieldProps.value);
+    const resetPasswordForm = new ResetPasswordForm();
     if(!resetPasswordForm.checkFormValid()) return;
 
     loading.reset = true
 
-    confirmPasswordReset($firebaseAuth, actionCode, reset_password.value).then(() => {
+    confirmPasswordReset($firebaseAuth, actionCode, form.reset_password).then(() => {
         loading.reset = false;
         addToast({
           message: "Password changed successfully",

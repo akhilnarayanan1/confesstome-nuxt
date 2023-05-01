@@ -10,7 +10,7 @@
           <div class="form-control">
             <div class="input-group border rounded-lg">
               <span class="bg-transparent">📧</span>
-              <input v-model="forgot_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
+              <input v-model="form.forgot_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
             </div>  
               <InputLabel labelName="forgot_email" />
           </div> 
@@ -32,8 +32,7 @@
 
   import _ from "lodash";
   import { sendPasswordResetEmail } from "firebase/auth";
-  import { AlertData, ForgotPasswordData } from "@/assets/js/types";
-  import { changedKeys } from "@/assets/js/functions";
+  import { AlertData } from "@/assets/js/types";
 
   let loading: { forgot: boolean } = reactive({ forgot: false });
   
@@ -43,32 +42,18 @@
   clearToasts();
 
   const { $firebaseAuth } = useNuxtApp();
-  const forgot_email = ref("");
 
-  //Create an object with computed values of the fields
-  const fieldProps = computed(() => {
-    return {
-      forgot_email: forgot_email.value,
-    };
+  //Create a form
+  const form = reactive({
+    forgot_email: ''
   });
 
-  watch(() => _.cloneDeep(fieldProps.value),
-  (newval, preval) => {
-    //Find and delete any alerts that are no longer relevant
-    const changedKey = changedKeys(newval, preval);
-    for (let i=0; i< changedKey.length; i++) {
-      const isOnIndex = (_.findIndex(fieldAlert.value, {fieldid: changedKey[i]}));
-      if(isOnIndex > -1) fieldAlert.value.splice(isOnIndex, 1);
-    };
-  });
+  //Watch and clear any pending alert on field while typing on to the field
+  watchAlert(form);
 
   class ForgotPasswordForm{
-    forgot_email: string;
-    constructor(props: ForgotPasswordData){
-      this.forgot_email = props.forgot_email;
-    };
     checkRequiredFields(){
-      if (this.forgot_email.length <= 0) {
+      if (form.forgot_email.length <= 0) {
         addFieldAlert({
           message: "Email is required",
           type: "error",
@@ -89,11 +74,11 @@
   const forgotPassword = () => {
 
     //Stop processing if any UI error
-    const forgotPasswordForm = new ForgotPasswordForm(fieldProps.value);
+    const forgotPasswordForm = new ForgotPasswordForm();
     if(!forgotPasswordForm.checkFormValid()) return;
 
     loading.forgot = true;
-    sendPasswordResetEmail($firebaseAuth, forgot_email.value)
+    sendPasswordResetEmail($firebaseAuth, form.forgot_email)
     .then(() => {
       loading.forgot = false;
       addFieldAlert({
