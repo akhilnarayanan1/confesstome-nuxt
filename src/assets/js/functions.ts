@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-const changedKeys = (o1: any, o2: any) => _.keys(_.pickBy(o1, (v: any, k: any) => v !== o2[k]));
+const changedKeys = (o1: {[key: string]: string}, o2: {[key: string]: string}) => _.keys(_.pickBy(o1, (v: string, k: string) => v !== o2[k]));
 
 // const pushFieldAlert = (store:any , alertData: AlertData) => {
 //     store.commit('addFieldAlert', alertData)
