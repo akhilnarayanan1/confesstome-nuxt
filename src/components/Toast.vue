@@ -20,12 +20,14 @@
 <script setup lang="ts">
   import _ from "lodash";
   import { getToasts } from "@/composables/toasts";
-  import { ToastData } from "@/assets/js/types";
+  import { type ToastData } from "@/assets/js/types";
   
   let toasts = getToasts();
-  const removeToast = (id: number) =>{
-    const isOnIndex = (_.findIndex(toasts.value, {id: id}));
-    toasts.value.splice(isOnIndex, 1);
+  const removeToast = (id: number | undefined) =>{
+    if (id) {
+      const isOnIndex = (_.findIndex(toasts.value, {id: id}));
+      toasts.value.splice(isOnIndex, 1);
+    };
   };
 
   const reverseToast = (toasts: ToastData[]) => {

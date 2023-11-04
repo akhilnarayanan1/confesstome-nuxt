@@ -1,6 +1,6 @@
 interface AlertData{
   message: string,
-  type: 'error' | 'success'| 'warning' | string,
+  type: 'error' | 'success'| 'warning',
   source: 'ui' | 'server'
   fieldid: string,
 };
@@ -12,11 +12,11 @@ interface ToastData{
     feature: () => void,
     message: string,
   },
-  type: 'error' | 'success'| 'warning' | string,
+  type: 'error' | 'success'| 'warning',
   duration?: number,
 };
 
-export {
+export type {
   AlertData,
   ToastData,
 };

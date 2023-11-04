@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ToastData } from "@/assets/js/types";
+  import { type AlertData, type ToastData } from "@/assets/js/types";
   import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
 
   //Set and clear field alert on page load
@@ -50,7 +50,7 @@
   clearFieldAlerts();
   clearToasts();
   
-  const { $firebaseDB } = useNuxtApp();
+  const db = useFirestore();
   
   const loading = reactive({ continue: false });
   const completeProfileModal = reactive({ loading:true, open: false });
@@ -116,9 +116,9 @@
 
     loading.continue = true;
 
-    const user = await getUserDataPromised();
+    const user = firebaseUser().value || await getUserDataPromised()
 
-    await setDoc(doc($firebaseDB, "users", user.uid), {
+    await setDoc(doc(db, "users", user.uid), {
       name: form.update_name,
       username: form.update_username,
       createdOn: serverTimestamp(),
@@ -141,9 +141,10 @@
 
 
   onMounted(async ()=>{
-    const user = await getUserDataPromised();
-
-    const userSnap = await getDoc(doc($firebaseDB, "users", user.uid));
+    const user = firebaseUser().value || await getUserDataPromised();
+    console.log(user)
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+    console.log(user)
     
     completeProfileModal.loading = false;
 

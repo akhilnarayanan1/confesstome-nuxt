@@ -32,7 +32,7 @@
 
   import _ from "lodash";
   import { sendPasswordResetEmail } from "firebase/auth";
-  import { AlertData } from "@/assets/js/types";
+  import { type AlertData } from "@/assets/js/types";
 
   let loading: { forgot: boolean } = reactive({ forgot: false });
   
@@ -41,7 +41,7 @@
   clearFieldAlerts();
   clearToasts();
 
-  const { $firebaseAuth } = useNuxtApp();
+  const auth = useFirebaseAuth()!;
 
   //Create a form
   const form = reactive({
@@ -78,7 +78,7 @@
     if(!forgotPasswordForm.checkFormValid()) return;
 
     loading.forgot = true;
-    sendPasswordResetEmail($firebaseAuth, form.forgot_email)
+    sendPasswordResetEmail(auth, form.forgot_email)
     .then(() => {
       loading.forgot = false;
       addFieldAlert({

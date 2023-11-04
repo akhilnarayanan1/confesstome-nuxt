@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ToastData } from "@/assets/js/types";
+  import { type AlertData, type ToastData } from "@/assets/js/types";
   import { maskMail } from "@/assets/js/functions";
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
 
@@ -72,7 +72,7 @@
   clearFieldAlerts();
   clearToasts();
 
-  const { $firebaseAuth } = useNuxtApp();
+  const auth = useFirebaseAuth()!;
 
   const route = useRoute();
 
@@ -113,7 +113,7 @@
   // });
 
   const handleResetPassword = (actionCode: string, continueUrl: string | undefined, lang: string) => {
-    verifyPasswordResetCode($firebaseAuth, actionCode).then((email) => {
+    verifyPasswordResetCode(auth, actionCode).then((email) => {
       loading.data = false;
       maskedEmail.value = maskMail(email);
     }).catch((err) => {
@@ -132,7 +132,7 @@
   };
 
   const handleVerifyEmail = (actionCode: string, continueUrl: string | undefined, lang: string) => {
-    applyActionCode($firebaseAuth, actionCode).then(() => {
+    applyActionCode(auth, actionCode).then(() => {
       loading.data = false;
     }).catch((err) => {
       loading.data = false;
@@ -221,7 +221,7 @@
 
     loading.reset = true
 
-    confirmPasswordReset($firebaseAuth, actionCode, form.reset_password).then(() => {
+    confirmPasswordReset(auth, actionCode, form.reset_password).then(() => {
         loading.reset = false;
         addToast({
           message: "Password changed successfully",

@@ -40,8 +40,8 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ToastData } from "@/assets/js/types";
-  import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
+  import { type AlertData, type ToastData } from "@/assets/js/types";
+  import { signInWithEmailAndPassword, sendEmailVerification, type User } from "firebase/auth";
     
   let loading: { login: boolean } = reactive({ login: false });
 
@@ -52,7 +52,7 @@
   clearFieldAlerts();
   clearToasts();
 
-  const { $firebaseAuth } = useNuxtApp();
+  const auth = useFirebaseAuth()!;
   
   //Create a form
   const form = reactive({
@@ -98,7 +98,7 @@
     if(!loginForm.checkFormValid()) return;
 
     loading.login = true;
-    signInWithEmailAndPassword($firebaseAuth, form.login_email, form.login_password)
+    signInWithEmailAndPassword(auth, form.login_email, form.login_password)
     .then((userCredential) => {
       loading.login = false;
       if (userCredential.user.emailVerified) {

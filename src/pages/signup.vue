@@ -49,13 +49,12 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { AlertData, ToastData } from "@/assets/js/types";
+  import { type AlertData, type ToastData } from "@/assets/js/types";
   import { linkWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
   
   let loading = reactive({ signup: false });
 
   const router = useRouter();
-  const user = getUserData();
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
@@ -129,10 +128,10 @@
     };
   };
 
-  const createAccount = () => {
-
+  const createAccount = async () => {
+    const user = firebaseUser().value || await getUserDataPromised();
     //Stop processing if user is blank
-    if(!user.value){
+    if(!user){
       addToast({
         message: "Unknown error, Please try again (101)",
         type: "error",
@@ -147,7 +146,7 @@
 
     loading.signup = true;
     const credential = EmailAuthProvider.credential(form.signup_email, form.signup_password);
-    linkWithCredential(user.value, credential)
+    linkWithCredential(user, credential)
     .then(async (userCredential) => {
       try{
         //Send verification email

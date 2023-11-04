@@ -1,24 +1,16 @@
-import { onAuthStateChanged, signInAnonymously, Auth } from "firebase/auth";
-import { User } from "firebase/auth";
+import { onAuthStateChanged, signInAnonymously, type Auth } from "firebase/auth";
+import { type User } from "firebase/auth";
 
-const firebaseUser = () => useState<User>("firebaseUser");
-const isUserLoading = () => useState<boolean>("isUserLoading", () => true);
-const isAuthenticated = () => useState<boolean>("isAuthenticated", () => false);
+export const firebaseUser = () => useState<User>("firebaseUser");
 
-export const getUserData = () => {    
-  const { $firebaseAuth } = useNuxtApp();
-  onBeforeMount(() => {
-    isUserLoading().value = true;
-  });
+export const getUserData = () => {
+  const auth = useFirebaseAuth()!;
   onMounted(() => {
-    onAuthStateChanged($firebaseAuth, (currentUser) => {
+    onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         firebaseUser().value = currentUser;
-        isAuthenticated().value = true;
-        isUserLoading().value = false;
       } else {
-        isUserLoading().value = false;
-        anonymousSignIn($firebaseAuth);
+        anonymousSignIn(auth)
       };
     });
   });
@@ -26,21 +18,16 @@ export const getUserData = () => {
 };
 
 export const getUserDataPromised = (): Promise<User> => {
-  const { $firebaseAuth } = useNuxtApp();
-  return new Promise((resolve, reject) => {
-    try {
-      const unsubscribe = onAuthStateChanged($firebaseAuth, (user) => { if (user) resolve(user) });
-      unsubscribe();
-    } catch(err) {
+  return new Promise(async(resolve, reject) => {
+    try{
+      const user = await getCurrentUser()
+      firebaseUser().value = user;
+      resolve(user);
+    } catch (err) {
       reject(err);
-    };
-  });
+    }
+  })
 };
-
-export const getIsUserLoading = () => isUserLoading();
-export const getIsAuthenticated = () => isAuthenticated();
-export const setIsAuthenticated = (authenticated: boolean) => isAuthenticated().value = authenticated;
-
 
 const anonymousSignIn = async (auth: Auth) => {
   await signInAnonymously(auth);

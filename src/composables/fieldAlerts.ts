@@ -1,4 +1,4 @@
-import { AlertData } from "@/assets/js/types";
+import { type AlertData } from "@/assets/js/types";
 import _ from "lodash";
 
 export const fieldAlerts = () => useState<AlertData[]>("fieldAlerts", () => []);

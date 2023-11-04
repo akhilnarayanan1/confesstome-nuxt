@@ -1,11 +1,10 @@
-import { ToastData } from "@/assets/js/types";
+import { type ToastData } from "@/assets/js/types";
 import _ from "lodash";
 
 export const toasts = () => useState<ToastData[]>("toasts", () => []);
-export const toastCounter = () => useState<number>("toastCounter", () => 0);
 
 export const addToast = (toast: ToastData) => {
-    toast.id = toastCounter().value++;
+    toast.id = toasts().value.length;
     toast.duration ? setTimeout(() => {
         const isOnIndex = (_.findIndex(toasts().value, {id: toast.id}));
         toasts().value.splice(isOnIndex, 1);
