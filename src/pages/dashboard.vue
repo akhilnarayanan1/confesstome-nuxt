@@ -1,6 +1,11 @@
 <template>
   <div>
 
+    
+    <button @click="signOutUser" class="btn btn-block glass bg-primary hover:bg-primary">
+      Signout
+    </button>
+
   <input type="checkbox" :checked="completeProfileModal.open" id="my-modal" class="modal-toggle">
   <div class="modal">
     <div class="modal-box">
@@ -32,7 +37,7 @@
         </div>
 
         
-        </form>
+      </form>
       
     </div>
   </div>
@@ -44,6 +49,8 @@
   import _ from "lodash";
   import { type AlertData, type ToastData } from "@/assets/js/types";
   import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
+  import { signOut } from "firebase/auth";
+  import { collection, query, where, getDocs } from "firebase/firestore";
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
@@ -118,22 +125,29 @@
 
     const user = firebaseUser().value || await getUserDataPromised()
 
-    await setDoc(doc(db, "users", user.uid), {
-      name: form.update_name,
-      username: form.update_username,
-      createdOn: serverTimestamp(),
-    });
-
+    const q = query(collection(db, "users"), where("username", "==", form.update_username));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      addFieldAlert({
+        message: "User already exist. Pick another username.",
+        source: "server",
+        type: "error",
+        fieldid: "update_username",
+      })
+    } else {
+      await setDoc(doc(db, "users", user.uid), {
+        name: form.update_name,
+        username: form.update_username,
+        createdOn: serverTimestamp(),
+      });
+      completeProfileModal.open = false;
+      addToast({
+        message: "Profile updated successfully!",
+        type: "success",
+        duration: 2000,
+      } as ToastData);
+    }
     loading.continue = false;
-
-    completeProfileModal.open = false;
-
-    addToast({
-      message: "Profile updated successfully!",
-      type: "success",
-      duration: 2000,
-    } as ToastData);
-
   };
 
 
@@ -142,13 +156,11 @@
 
   onMounted(async ()=>{
     const user = firebaseUser().value || await getUserDataPromised();
-    console.log(user)
     const userSnap = await getDoc(doc(db, "users", user.uid));
-    console.log(user)
     
     completeProfileModal.loading = false;
 
-    if (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username) {
+    if (!user.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
       console.log("Document data:", userSnap.data());
       completeProfileModal.open = true;
     } 
@@ -158,6 +170,16 @@
   // watch(completeProfileModal, () => {
   //   console.log("completeProfileModal", completeProfileModal);
   // }, { deep: true });
+
+  const signOutUser = () => {
+    const auth = useFirebaseAuth()!;
+    signOut(auth).catch(error => {
+      addToast({
+        message: error,
+        type: "error"
+      })
+    })
+  };
 
 
 
