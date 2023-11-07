@@ -16,7 +16,12 @@ interface ToastData{
   duration?: number,
 };
 
+interface RandomKeyValue { 
+  [key: string]: string;
+}
+
 export type {
   AlertData,
   ToastData,
+  RandomKeyValue,
 };

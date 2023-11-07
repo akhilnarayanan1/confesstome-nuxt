@@ -64,6 +64,7 @@
   import { type AlertData, type ToastData } from "@/assets/js/types";
   import { maskMail } from "@/assets/js/functions";
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
+  import { ResetPasswordForm } from "@/assets/js/forms";
 
   const loading: { data: boolean, reset: boolean } = reactive({ data: false, reset: false });
 
@@ -93,9 +94,6 @@
     reset_password: '',
     reset_confirm_password: ''
   });
-
-  //Watch and clear any pending alert on field while typing on to the field
-  watchAlert(form);
 
   // watch(() => _.cloneDeep(fieldProps.value),
   // (newval, preval) => {
@@ -162,61 +160,10 @@
       break;
   };
 
-  class ResetPasswordForm {
-    checkRequiredFields() {
-      if (form.reset_password.length < 6) {
-        addFieldAlert({
-            message: "Password must be at least 6 characters",
-            type: "error",
-            source: "ui",
-            fieldid: "reset_password",
-        } as AlertData);
-      };
-      if (form.reset_confirm_password.length < 6) {
-        addFieldAlert({
-            message: "Password must be at least 6 characters",
-            fieldid: "reset_confirm_password",
-            source: "ui",
-            type: "error",
-        } as AlertData);
-      };
-    };
-
-    passwordMatcher() {
-      if ((form.reset_password.length >= 6) && 
-      (form.reset_password === form.reset_confirm_password)) {
-        addFieldAlert({
-          message: "Password matched",
-          fieldid: "reset_confirm_password",
-          source: "ui",
-          type: "success",
-        } as AlertData);
-      }else if ((form.reset_password.length >= 6) && 
-      (form.reset_password !== form.reset_confirm_password)) {
-        addFieldAlert({
-          message: "Passwords do not match",
-          fieldid: "reset_confirm_password",
-          source: "ui",
-          type: "error",
-        } as AlertData);
-      };
-    };
-
-    checkFormValid(){
-      this.checkRequiredFields()
-      this.passwordMatcher()
-      return (_.findIndex(fieldAlert.value, {
-        source: "ui", 
-        type: "error",
-      }) > -1) ? false : true
-    };
-
-  };
-
   const resetPassword = () => {
 
     //Stop processing if any UI error
-    const resetPasswordForm = new ResetPasswordForm();
+    const resetPasswordForm = new ResetPasswordForm(form);
     if(!resetPasswordForm.checkFormValid()) return;
 
     loading.reset = true

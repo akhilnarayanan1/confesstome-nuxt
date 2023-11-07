@@ -42,13 +42,13 @@
   import _ from "lodash";
   import { type AlertData, type ToastData } from "@/assets/js/types";
   import { signInWithEmailAndPassword, sendEmailVerification, type User } from "firebase/auth";
+  import { LoginForm } from "@/assets/js/forms";
     
   let loading: { login: boolean } = reactive({ login: false });
 
   const router = useRouter();
 
   //Set and clear field alert on page load
-  let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
   clearToasts();
 
@@ -60,41 +60,10 @@
     login_password: ''
   });
 
-  //Watch and clear any pending alert on field while typing on to the field
-  watchAlert(form);
-
-  class LoginForm {
-    checkRequiredFields(){
-      if(form.login_email.length <= 0){
-        addFieldAlert({
-          message: "Email is required",
-          type: "error",
-          source: "ui",
-          fieldid: "login_email",
-        } as AlertData);
-      };
-      if (form.login_password.length <= 0) {
-        addFieldAlert({
-          message: "Password is reqired",
-          type: "error",
-          source: "ui",
-          fieldid: "login_password",
-        } as AlertData);
-      };
-    };
-    checkFormValid() {
-      this.checkRequiredFields();
-      return (_.findIndex(fieldAlert.value, {
-        source: "ui", 
-        type: "error"
-      }) > -1) ? false : true;
-    };
-  };
-    
   const loginAccount = () => {
 
     //Stop processing if any UI error
-    const loginForm = new LoginForm();
+    const loginForm = new LoginForm(form);
     if(!loginForm.checkFormValid()) return;
 
     loading.login = true;

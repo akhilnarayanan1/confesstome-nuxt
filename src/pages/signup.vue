@@ -51,13 +51,13 @@
   import _ from "lodash";
   import { type AlertData, type ToastData } from "@/assets/js/types";
   import { linkWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
+  import { SignupForm } from "@/assets/js/forms";
   
   let loading = reactive({ signup: false });
 
   const router = useRouter();
 
   //Set and clear field alert on page load
-  let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
   clearToasts();
 
@@ -67,66 +67,6 @@
     signup_password: '',
     signup_confirm_password: ''
   });
-
-  //Watch and clear any pending alert on field while typing on to the field
-  watchAlert(form);
-
-  class SignupForm {
-    checkRequiredFields() {
-      if(form.signup_password.length < 6){
-        addFieldAlert({
-          message: "Password must be at least 6 characters",
-          type: "error",
-          source: "ui",
-          fieldid: "signup_password",
-        } as AlertData);
-      };
-      if(form.signup_confirm_password.length < 6){
-        addFieldAlert({
-          message: "Password must be at least 6 characters",
-          fieldid: "signup_confirm_password",
-          source: "ui",
-          type: "error",
-        } as AlertData);
-      };
-      if(form.signup_email.length <= 0){
-        addFieldAlert({
-          message: "Email is required",
-          fieldid: "signup_email",
-          source: "ui",
-          type: "error",
-        } as AlertData);
-      };
-    };
-
-    passwordMatcher() {
-      if ((form.signup_password.length >= 6) && 
-      (form.signup_password === form.signup_confirm_password)) {
-        addFieldAlert({
-          message: "Password matched",
-          fieldid: "signup_confirm_password",
-          source: "ui",
-          type: "success",
-        } as AlertData);
-      } else if ((form.signup_password.length >= 6) && 
-      (form.signup_password !== form.signup_confirm_password)) {
-        addFieldAlert({
-            message: "Passwords do not match",
-            fieldid: "signup_confirm_password",
-            source: "ui",
-            type: "error",
-        } as AlertData);
-      };
-    };
-    checkFormValid() {
-      this.checkRequiredFields()
-      this.passwordMatcher()
-      return (_.findIndex(fieldAlert.value, {
-          source: "ui", 
-          type: "error",
-      }) > -1) ? false : true;
-    };
-  };
 
   const createAccount = async () => {
     const user = firebaseUser().value || await getUserDataPromised();
@@ -141,7 +81,7 @@
     };
 
     //Stop processing if any UI error
-    const signupForm = new SignupForm();
+    const signupForm = new SignupForm(form);
     if(!signupForm.checkFormValid()) return;
 
     loading.signup = true;

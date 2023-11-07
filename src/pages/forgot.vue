@@ -33,11 +33,11 @@
   import _ from "lodash";
   import { sendPasswordResetEmail } from "firebase/auth";
   import { type AlertData } from "@/assets/js/types";
+  import { ForgotPasswordForm } from "@/assets/js/forms";
 
   let loading: { forgot: boolean } = reactive({ forgot: false });
   
   //Set and clear field alert on page load
-  let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
   clearToasts();
 
@@ -48,33 +48,10 @@
     forgot_email: ''
   });
 
-  //Watch and clear any pending alert on field while typing on to the field
-  watchAlert(form);
-
-  class ForgotPasswordForm{
-    checkRequiredFields(){
-      if (form.forgot_email.length <= 0) {
-        addFieldAlert({
-          message: "Email is required",
-          type: "error",
-          source: "ui",
-          fieldid: "forgot_email",
-        } as AlertData);
-      };
-    };
-    checkFormValid(){
-      this.checkRequiredFields();
-      return (_.findIndex(fieldAlert.value, {
-        source: "ui", 
-        type: "error",
-      }) > -1) ? false : true;
-    };
-  };
-
   const forgotPassword = () => {
 
     //Stop processing if any UI error
-    const forgotPasswordForm = new ForgotPasswordForm();
+    const forgotPasswordForm = new ForgotPasswordForm(form);
     if(!forgotPasswordForm.checkFormValid()) return;
 
     loading.forgot = true;
