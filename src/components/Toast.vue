@@ -24,7 +24,7 @@
   
   let toasts = getToasts();
   const removeToast = (id: number | undefined) =>{
-    if (id) {
+    if (typeof id !== "undefined") {
       const isOnIndex = (_.findIndex(toasts.value, {id: id}));
       toasts.value.splice(isOnIndex, 1);
     };

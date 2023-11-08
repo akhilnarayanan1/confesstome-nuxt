@@ -12,7 +12,8 @@
             
             <div class="mb-4">Spill it out for {{ otherUser.name }}</div>
 
-            <textarea v-model="message" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
+            <textarea v-model="form.send_confession" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
+            <InputLabel class="-mt-6" labelName="send_confession" />
             <button type="submit" :class="loading.sendMessage ? 
             'btn btn-block glass bg-primary hover:bg-primary loading': 
             'btn btn-block glass bg-primary hover:bg-primary'">
@@ -32,16 +33,17 @@
 
 <script setup lang="ts">
   import { type ToastData } from "@/assets/js/types";
-  import { collection, query, where, getDocs, getDoc } from "firebase/firestore";
+  import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
+  import { SendConfession } from "@/assets/js/forms";
 
   const db = useFirestore()!;
   const route = useRoute();
 
   const loading = reactive({ sendMessage: false});
 
-  const message = ref("");
+  const form = reactive({ send_confession: ''});
 
-  const otherUser = reactive({ loading: true, found: false, name: "", username: "" });
+  const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
 
   const startThread = async () => {
     const currentUser = firebaseUser().value || await getUserDataPromised();
@@ -55,7 +57,37 @@
       } as ToastData);
       return;
     };
-    console.log(message.value)
+
+    //Stop processing if any UI error
+    const sendConfession = new SendConfession(form);
+    if (!sendConfession.checkFormValid()) return;
+
+    
+    loading.sendMessage = true;
+
+    if (otherUser.uid == currentUser.uid) {
+      addToast({
+        message: "You can't send message to yourself.",
+        type: "error",
+        duration: 3000,
+      })
+      loading.sendMessage = false;
+      return;
+    };
+
+    await addDoc((collection(db, "messages")), {
+      to: otherUser.uid,
+      from: currentUser.uid,
+      message: form.send_confession,
+      createdOn: serverTimestamp(),
+    })
+
+    addToast({
+      message: "Message sent successfully!",
+      type: "success",
+      duration: 3000,
+    })
+    loading.sendMessage = false;
   };
 
   onMounted(async ()=>{
@@ -67,9 +99,11 @@
     querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
 
     if (!querySnapshot.empty){
-      const { name, username } =  querySnapshot.docs[0].data()
-      otherUser.name = name
-      otherUser.username = username
+      const id = querySnapshot.docs[0].id;
+      const { name, username } =  querySnapshot.docs[0].data();
+      otherUser.name = name;
+      otherUser.username = username;
+      otherUser.uid = id;
     }
   
   });

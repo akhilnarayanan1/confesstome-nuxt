@@ -10,15 +10,31 @@ service cloud.firestore {
       allow create, update: if isOwner(userId);
     }
     
+    match /messages/{messageId}{
+    	allow read: if isSignedIn() && isReceiver();
+      allow create: if isSender() && !isSenderReciverSame();
+    }
     
     // Functions //
-    function OwnerRegistered(){
-    	return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+    // function OwnerRegistered(){
+    // 	return exists(/databases/$(database)/documents/users/$(request.auth.uid))
+    // }
+    
+    // function byOwner(){
+    // 	return request.auth.uid == request.resource.data.userid
+    // };
+    
+    function isSender() {
+    	return request.auth.uid == request.resource.data.from;
     }
     
-    function byOwner(){
-    	return request.auth.uid == request.resource.data.userid
+    function isReceiver() {
+    	return request.auth.uid == request.resource.data.to;
     }
+    
+    function isSenderReciverSame() {
+    	return request.resource.data.to == request.resource.data.from;
+    } 
     
     function isOwner(userId){
     	return request.auth.uid == userId;
