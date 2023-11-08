@@ -47,13 +47,13 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type AlertData, type ToastData } from "@/assets/js/types";
+  import { type ToastData } from "@/assets/js/types";
   import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
   import { signOut } from "firebase/auth";
   import { collection, query, where, getDocs } from "firebase/firestore";
+  import { CompleteProfileForm } from "@/assets/js/forms";
 
   //Set and clear field alert on page load
-  let fieldAlert = getFieldAlerts();
   clearFieldAlerts();
   clearToasts();
   
@@ -68,62 +68,25 @@
     update_username: ''
   });
 
-  //Watch and clear any pending alert on field while typing on to the field
-  watchAlert(form);
-
-  class CompleteProfileForm {
-    checkRequiredFields(){
-      if(form.update_name.length <= 0){
-        addFieldAlert({
-          message: "Name is required",
-          type: "error",
-          source: "ui",
-          fieldid: "update_name",
-        } as AlertData);
-      };
-      // if(form.update_name.length <= 2){ // set REGEX
-      //   addFieldAlert({
-      //     message: "Name should be atleast 3 characters long",
-      //     type: "error",
-      //     source: "ui",
-      //     fieldid: "update_name",
-      //   } as AlertData);
-      // };
-      if (form.update_username.length <= 0) {
-        addFieldAlert({
-          message: "Username is reqired",
-          type: "error",
-          source: "ui",
-          fieldid: "update_username",
-        } as AlertData);
-      };
-      // if (form.update_username.length <= 0) { // set REGEX
-      //   addFieldAlert({
-      //     message: "Username is reqired",
-      //     type: "error",
-      //     source: "ui",
-      //     fieldid: "update_username",
-      //   } as AlertData);
-      // };
-    };
-    checkFormValid() {
-      this.checkRequiredFields();
-      return (_.findIndex(fieldAlert.value, {
-        source: "ui", 
-        type: "error"
-      }) > -1) ? false : true;
-    };
-  };
-
   const createAccount = async () => {
 
+    const user = firebaseUser().value || await getUserDataPromised();
+
+    //Stop processing if user is blank
+    if(!user){
+      addToast({
+        message: "Unknown error, Please try again (101)",
+        type: "error",
+        duration: 2000,
+      } as ToastData);
+      return;
+    };
+
     //Stop processing if any UI error
-    const completeProfileForm = new CompleteProfileForm();
+    const completeProfileForm = new CompleteProfileForm(form);
     if(!completeProfileForm.checkFormValid()) return;
 
     loading.continue = true;
-
-    const user = firebaseUser().value || await getUserDataPromised()
 
     const q = query(collection(db, "users"), where("username", "==", form.update_username));
     const querySnapshot = await getDocs(q);
@@ -171,14 +134,24 @@
   //   console.log("completeProfileModal", completeProfileModal);
   // }, { deep: true });
 
-  const signOutUser = () => {
+  const signOutUser = async () => {
     const auth = useFirebaseAuth()!;
-    signOut(auth).catch(error => {
-      addToast({
-        message: error,
-        type: "error"
+    const user = firebaseUser().value || await getUserDataPromised();
+    if (!user.isAnonymous) {
+      signOut(auth).catch(error => {
+        addToast({
+          message: error,
+          type: "error"
+        })
       })
-    })
+    } else {
+      addToast({
+        message: "Already signedout. Can't signout again.",
+        type: "error",
+        duration: 3000
+      })
+    }
+    
   };
 
 

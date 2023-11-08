@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type AlertData, type ToastData } from "@/assets/js/types";
+  import { type ToastData } from "@/assets/js/types";
   import { maskMail } from "@/assets/js/functions";
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
   import { ResetPasswordForm } from "@/assets/js/forms";

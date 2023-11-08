@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type AlertData, type ToastData } from "@/assets/js/types";
+  import { type ToastData } from "@/assets/js/types";
   import { signInWithEmailAndPassword, sendEmailVerification, type User } from "firebase/auth";
   import { LoginForm } from "@/assets/js/forms";
     
