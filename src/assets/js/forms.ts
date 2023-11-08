@@ -201,9 +201,67 @@ class SignupForm {
     };
   };
 
+
+
+  interface TCompleteProfileForm {
+    update_name: string;
+    update_username: string;
+  }
+   class CompleteProfileForm {
+    form: TCompleteProfileForm | RandomKeyValue;
+    constructor (form: TCompleteProfileForm | RandomKeyValue) {
+        this.form = form;
+        watchAlert(this.form as RandomKeyValue);
+    }
+     checkRequiredFields(){
+       if(this.form.update_name.length <= 0){
+         addFieldAlert({
+           message: "Name is required",
+           type: "error",
+           source: "ui",
+           fieldid: "update_name",
+         } as AlertData);
+       };
+       // if(this.form.update_name.length <= 2){ // set REGEX
+       //   addFieldAlert({
+       //     message: "Name should be atleast 3 characters long",
+       //     type: "error",
+       //     source: "ui",
+       //     fieldid: "update_name",
+       //   } as AlertData);
+       // };
+       if (this.form.update_username.length <= 0) {
+         addFieldAlert({
+           message: "Username is reqired",
+           type: "error",
+           source: "ui",
+           fieldid: "update_username",
+         } as AlertData);
+       };
+       // if (this.form.update_username.length <= 0) { // set REGEX
+       //   addFieldAlert({
+       //     message: "Username is reqired",
+       //     type: "error",
+       //     source: "ui",
+       //     fieldid: "update_username",
+       //   } as AlertData);
+       // };
+     };
+     checkFormValid() {
+       this.checkRequiredFields();
+       let fieldAlert = getFieldAlerts();
+       return (_.findIndex(fieldAlert.value, {
+         source: "ui", 
+         type: "error"
+       }) > -1) ? false : true;
+     };
+   };
+ 
+
 export {
   SignupForm,
   LoginForm,
   ForgotPasswordForm,
   ResetPasswordForm,
+  CompleteProfileForm,
 }
