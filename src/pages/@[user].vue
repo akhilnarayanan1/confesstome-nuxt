@@ -1,8 +1,8 @@
 <template>
-  <div v-if="user.loading">
+  <div v-if="otherUser.loading">
     Loading...
   </div>
-  <div v-else-if="user.found">
+  <div v-else-if="otherUser.found">
     <!-- {{ user }} -->
     <div class="flex items-center justify-center h-screen">
       <div class="card shadow max-w-sm m-4">
@@ -10,7 +10,7 @@
           <div class="text-4xl font-bold mb-4">What's there for me</div>
           <form @submit.prevent="startThread">
             
-            <div class="mb-4">Spill it out</div>
+            <div class="mb-4">Spill it out for {{ otherUser.name }}</div>
 
             <textarea v-model="message" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
             <button type="submit" :class="loading.sendMessage ? 
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-
+  import { type ToastData } from "@/assets/js/types";
   import { collection, query, where, getDocs, getDoc } from "firebase/firestore";
 
   const db = useFirestore()!;
@@ -41,14 +41,20 @@
 
   const message = ref("");
 
-  const user = reactive({
-    loading: true,
-    found: false,
-    name: "",
-    username: "",
-  });
+  const otherUser = reactive({ loading: true, found: false, name: "", username: "" });
 
-  const startThread = () => {
+  const startThread = async () => {
+    const currentUser = firebaseUser().value || await getUserDataPromised();
+
+    //Stop processing if user is blank
+    if(!currentUser){
+      addToast({
+        message: "Unknown error, Please try again (101)",
+        type: "error",
+        duration: 2000,
+      } as ToastData);
+      return;
+    };
     console.log(message.value)
   };
 
@@ -57,16 +63,14 @@
     const q = query(collection(db, "users"), where("username", "==", route.params.user));
     const querySnapshot = await getDocs(q);
 
-    user.loading = false;
-    querySnapshot.empty ? user.found = false : user.found = true;
+    otherUser.loading = false;
+    querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
 
-    if (user.found) {
-      querySnapshot.forEach((doc) => {
-        let userData = doc.data();
-        user.name = userData.name;
-        user.username = userData.username;
-      });
-    };
+    if (!querySnapshot.empty){
+      const { name, username } =  querySnapshot.docs[0].data()
+      otherUser.name = name
+      otherUser.username = username
+    }
   
   });
   

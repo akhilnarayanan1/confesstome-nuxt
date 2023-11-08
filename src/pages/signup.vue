@@ -69,9 +69,9 @@
   });
 
   const createAccount = async () => {
-    const user = firebaseUser().value || await getUserDataPromised();
+    const currentUser = firebaseUser().value || await getUserDataPromised();
     //Stop processing if user is blank
-    if(!user){
+    if(!currentUser){
       addToast({
         message: "Unknown error, Please try again (101)",
         type: "error",
@@ -86,7 +86,7 @@
 
     loading.signup = true;
     const credential = EmailAuthProvider.credential(form.signup_email, form.signup_password);
-    linkWithCredential(user, credential)
+    linkWithCredential(currentUser, credential)
     .then(async (userCredential) => {
       try{
         //Send verification email

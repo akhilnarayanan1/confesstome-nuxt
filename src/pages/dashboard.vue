@@ -70,10 +70,10 @@
 
   const createAccount = async () => {
 
-    const user = firebaseUser().value || await getUserDataPromised();
+    const currentUser = firebaseUser().value || await getUserDataPromised();
 
     //Stop processing if user is blank
-    if(!user){
+    if(!currentUser){
       addToast({
         message: "Unknown error, Please try again (101)",
         type: "error",
@@ -98,7 +98,7 @@
         fieldid: "update_username",
       })
     } else {
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(db, "users", currentUser.uid), {
         name: form.update_name,
         username: form.update_username,
         createdOn: serverTimestamp(),
@@ -118,12 +118,12 @@
 
 
   onMounted(async ()=>{
-    const user = firebaseUser().value || await getUserDataPromised();
-    const userSnap = await getDoc(doc(db, "users", user.uid));
+    const currentUser = firebaseUser().value || await getUserDataPromised();
+    const userSnap = await getDoc(doc(db, "users", currentUser.uid));
     
     completeProfileModal.loading = false;
 
-    if (!user.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
+    if (!currentUser.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
       console.log("Document data:", userSnap.data());
       completeProfileModal.open = true;
     } 
