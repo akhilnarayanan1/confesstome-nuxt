@@ -39,10 +39,9 @@
                 </div>  
                 <InputLabel labelName="reset_confirm_password"/>
               </div> 
-              <button type="submit" :class="loading.reset ? 
-              'btn btn-block glass bg-primary hover:bg-primary loading': 
-              'btn btn-block glass bg-primary hover:bg-primary'">
-                CHANGE PASSWORD
+              <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+                <span v-if="loading.reset" class="loading loading-spinner loading-sm"></span>
+                <span>CHANGE PASSWORD</span>
               </button>
             </form>
           </div>

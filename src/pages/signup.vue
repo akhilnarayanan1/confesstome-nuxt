@@ -36,10 +36,9 @@
               </div>   
           </div> -->
 
-          <button type="submit" :class="loading.signup ? 
-          'btn btn-block glass bg-primary hover:bg-primary loading': 
-          'btn btn-block glass bg-primary hover:bg-primary'">
-            CREATE ACCOUNT
+          <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+            <span v-if="loading.signup" class="loading loading-spinner loading-sm"></span>
+            <span>CREATE ACCOUNT</span>
           </button>
         </form>
       </div>

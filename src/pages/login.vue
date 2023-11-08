@@ -25,11 +25,10 @@
 
         <NuxtLink to="/forgot" class="text-primary font-bold float-right mb-4">Forgot Password?</NuxtLink>
     
-        <button type="submit" :class="loading.login ? 
-        'btn btn-block glass bg-primary hover:bg-primary loading': 
-        'btn btn-block glass bg-primary hover:bg-primary'">
-          LOGIN
-        </button>
+          <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+            <span v-if="loading.login" class="loading loading-spinner loading-sm"></span>
+            <span>LOGIN</span>
+          </button>
         </form>
       </div>
     </div> 

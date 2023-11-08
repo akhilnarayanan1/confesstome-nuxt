@@ -14,11 +14,11 @@
 
             <textarea v-model="form.send_confession" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
             <InputLabel class="-mt-6" labelName="send_confession" />
-            <button type="submit" :class="loading.sendMessage ? 
-            'btn btn-block glass bg-primary hover:bg-primary loading': 
-            'btn btn-block glass bg-primary hover:bg-primary'">
-              Send Confession
+            <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+              <span v-if="loading.sendMessage" class="loading loading-spinner loading-sm"></span>
+              <span>Send Confession</span>
             </button>
+            
           </form>
         </div>
       </div> 
