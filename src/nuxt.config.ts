@@ -3,7 +3,8 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: [
       '@nuxt/devtools',
-        'nuxt-vuefire',
+      'nuxt-vuefire',
+      '@nuxtjs/tailwindcss',
     ],
     // hiding config until we setup DB security 🔒
     vuefire: {
@@ -25,8 +26,5 @@ export default defineNuxtConfig({
 		  tailwindcss: {},
 		  autoprefixer: {},
 		}
-	  },
-    css: [
-        "@/assets/css/main.css",
-    ],
+	  }
 })
