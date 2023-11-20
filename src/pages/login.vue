@@ -7,21 +7,25 @@
         <div class="mb-4">Don't have an account?  <NuxtLink to="/signup" class="text-primary font-bold" replace>Create your account</NuxtLink>, it takes less than a minute</div>
 
         <form @submit.prevent="loginAccount">
-        <div class="form-control">
-          <div class="input-group border rounded-lg">
-            <span class="bg-transparent">📧</span>
-            <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="w-full input">
-          </div>  
-          <InputLabel labelName="login_email"/>
-        </div> 
-        
-        <div class="form-control">
-          <div class="input-group border rounded-lg">
-            <span class="bg-transparent">🔒</span>
-            <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="w-full input"> 
-          </div>  
-          <InputLabel labelName="login_password"/>
-        </div> 
+          <div class="form-control">
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">mail</span>
+              </div>
+              <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="w-full input ps-12">
+            </div>
+            <InputLabel labelName="login_email"/>
+          </div>
+
+          <div class="form-control">
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">lock</span>
+              </div>
+              <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="w-full input ps-12"> 
+            </div>
+            <InputLabel labelName="login_password"/>
+          </div>
 
         <NuxtLink to="/forgot" class="text-primary font-bold float-right mb-4">Forgot Password?</NuxtLink>
     

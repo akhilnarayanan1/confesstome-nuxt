@@ -8,27 +8,32 @@
         <form @submit.prevent="createAccount">
           
           <div class="form-control">
-            <div class="input-group border rounded-lg">
-              <span class="bg-transparent">📧</span>
-              <input v-model="form.signup_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
-            </div>  
-            <InputLabel labelName="signup_email"></InputLabel>
-          </div> 
-          
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">email</span>
+              </div>
+              <input v-model="form.signup_email" type="email" placeholder="Enter your e-mail" class="w-full input ps-12"> 
+            </div>
+            <InputLabel labelName="signup_email"/>
+          </div>
           <div class="form-control">
-            <div class="input-group border rounded-lg">
-              <span class="bg-transparent">🔒</span>
-              <input v-model="form.signup_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
-            </div>  
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">lock</span>
+              </div>
+              <input v-model="form.signup_password" type="password" placeholder="Choose a password" class="w-full input ps-12" autocomplete="false"> 
+            </div>
             <InputLabel labelName="signup_password"/>
-          </div> 
+          </div>
           <div class="form-control">
-            <div class="input-group border rounded-lg">
-              <span class="bg-transparent">🔒</span>
-              <input v-model="form.signup_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
-            </div>  
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">lock</span>
+              </div>
+              <input v-model="form.signup_confirm_password" type="password" placeholder="Confirm your password" class="w-full input ps-12" autocomplete="false"> 
+            </div>
             <InputLabel labelName="signup_confirm_password"/>
-          </div> 
+          </div>
           <!-- <div class="form-control">
               <div class="label">
                   <input type="checkbox" checked="checked" class="checkbox checkbox-primary">

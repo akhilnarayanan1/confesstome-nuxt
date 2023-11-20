@@ -6,20 +6,24 @@
 
             <form @submit.prevent="createAccount">
                 <div class="form-control">
-                <div class="input-group border rounded-lg">
-                    <span class="bg-transparent">🤠</span>
-                    <input v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input">
-                </div>  
-                <InputLabel labelName="update_name"/>
-                </div> 
-                
+                    <div class="relative input-group border rounded-lg">
+                        <div class="absolute mt-3 flex items-center ps-3.5">
+                            <span class="material-symbols-outlined">badge</span>
+                        </div>
+                        <input v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input ps-12">
+                    </div>
+                    <InputLabel labelName="update_name"/>
+                </div>
+
                 <div class="form-control">
-                <div class="input-group border rounded-lg">
-                    <span class="bg-transparent">🩸</span>
-                    <input autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input"> 
-                </div>  
-                <InputLabel labelName="update_username"/>
-                </div> 
+                    <div class="relative input-group border rounded-lg">
+                        <div class="absolute mt-3 flex items-center ps-3.5">
+                            <span class="material-symbols-outlined">alternate_email</span>
+                        </div>
+                        <input autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input ps-12"> 
+                    </div>
+                    <InputLabel labelName="update_username"/>
+                </div>
 
                 <div class="modal-action">
                     <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">

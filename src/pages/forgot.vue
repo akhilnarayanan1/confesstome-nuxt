@@ -8,12 +8,14 @@
 
         <form @submit.prevent="forgotPassword">
           <div class="form-control">
-            <div class="input-group border rounded-lg">
-              <span class="bg-transparent">📧</span>
-              <input v-model="form.forgot_email" type="email" placeholder="Enter your e-mail" class="w-full input"> 
-            </div>  
-              <InputLabel labelName="forgot_email" />
-          </div> 
+            <div class="relative input-group border rounded-lg">
+              <div class="absolute mt-3 flex items-center ps-3.5">
+                <span class="material-symbols-outlined">email</span>
+              </div>
+              <input v-model="form.forgot_email" type="email" placeholder="Enter your e-mail" class="w-full input ps-12"> 
+            </div>
+            <InputLabel labelName="forgot_email"/>
+          </div>
           <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
             <span v-if="loading.forgot" class="loading loading-spinner loading-sm"></span>
             <span>FORGOT PASSWORD</span>
