@@ -1,3 +1,5 @@
+import { type Timestamp } from "firebase-admin/firestore";
+
 interface AlertData{
   message: string,
   type: 'error' | 'success'| 'warning',
@@ -20,8 +22,15 @@ interface RandomKeyValue {
   [key: string]: string;
 }
 
+interface FirestoreUserProfile{
+  createdOn: Timestamp | string, 
+  name: string, 
+  username: string
+};
+
 export type {
   AlertData,
   ToastData,
   RandomKeyValue,
+  FirestoreUserProfile,
 };
