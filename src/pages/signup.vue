@@ -1,5 +1,8 @@
 <template>
-  <div class="flex items-center justify-center h-screen">
+  <div v-if="loading.page">
+    Loading...
+  </div>
+  <div v-else class="flex items-center justify-center h-screen">
     <div class="card shadow max-w-sm m-4">
       <div class="card-body">
         <div class="text-4xl font-bold mb-4">Signup</div>
@@ -54,11 +57,15 @@
 <script setup lang="ts">
   import _ from "lodash";
   import { type AlertData, type ToastData } from "@/assets/js/types";
-  import { linkWithCredential, EmailAuthProvider, sendEmailVerification } from "firebase/auth";
+  import { linkWithCredential, EmailAuthProvider, sendEmailVerification, type User } from "firebase/auth";
   import { SignupForm } from "@/assets/js/forms";
   
-  let loading = reactive({ signup: false });
+  let loading = reactive({ page: true, signup: false });
 
+  const currentUser = useCurrentUser();
+  
+  watchEffect(() => loading.page = currentUser.value == undefined);
+  
   const router = useRouter();
 
   //Set and clear field alert on page load
@@ -69,13 +76,13 @@
   const form = reactive({
     signup_email: '',
     signup_password: '',
-    signup_confirm_password: ''
+    signup_confirm_password: '',
   });
 
   const createAccount = async () => {
-    const currentUser = firebaseUser().value || await getUserDataPromised();
+
     //Stop processing if user is blank
-    if(!currentUser){
+    if(currentUser.value == undefined) {
       addToast({
         message: "Unknown error, Please try again (101)",
         type: "error",
@@ -90,7 +97,7 @@
 
     loading.signup = true;
     const credential = EmailAuthProvider.credential(form.signup_email, form.signup_password);
-    linkWithCredential(currentUser, credential)
+    linkWithCredential(currentUser.value as User, credential)
     .then(async (userCredential) => {
       try{
         //Send verification email

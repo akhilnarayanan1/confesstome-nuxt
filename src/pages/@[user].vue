@@ -39,17 +39,20 @@
   const db = useFirestore()!;
   const route = useRoute();
 
-  const loading = reactive({ sendMessage: false});
+  const loading = reactive({ page: true, sendMessage: false});
+
+  const currentUser = useCurrentUser();
+
+  watchEffect(() => loading.page = currentUser.value == undefined);
 
   const form = reactive({ send_confession: ''});
 
   const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
 
   const startThread = async () => {
-    const currentUser = firebaseUser().value || await getUserDataPromised();
 
     //Stop processing if user is blank
-    if(!currentUser){
+    if(currentUser.value == undefined) {
       addToast({
         message: "Unknown error, Please try again (101)",
         type: "error",
@@ -65,7 +68,7 @@
     
     loading.sendMessage = true;
 
-    if (otherUser.uid == currentUser.uid) {
+    if (otherUser.uid === currentUser.value?.uid) {
       addToast({
         message: "You can't send message to yourself.",
         type: "error",
@@ -77,7 +80,7 @@
 
     await addDoc((collection(db, "messages")), {
       to: otherUser.uid,
-      from: currentUser.uid,
+      from: currentUser.value?.uid || "",
       message: form.send_confession,
       createdOn: serverTimestamp(),
     })
@@ -90,7 +93,7 @@
     loading.sendMessage = false;
   };
 
-  onMounted(async ()=>{
+  onMounted(async ()=> {
 
     const q = query(collection(db, "users"), where("username", "==", route.params.user));
     const querySnapshot = await getDocs(q);
@@ -98,7 +101,7 @@
     otherUser.loading = false;
     querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
 
-    if (!querySnapshot.empty){
+    if (!querySnapshot.empty) {
       const id = querySnapshot.docs[0].id;
       const { name, username } =  querySnapshot.docs[0].data();
       otherUser.name = name;
