@@ -32,7 +32,7 @@
             <h3 class="font-bold text-2xl">Sure?</h3>
             <p class="mt-6">Are you sure, you want to log-out?</p>
             <div class="modal-action">
-                <form method="dialog">
+                <form id="formDialog" method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
                     <button @click="signOutUser" class="btn btn-ghost">CONFIRM</button>
                     <button class="btn">CLOSE</button>
@@ -44,17 +44,29 @@
 </template>
 
 <script setup lang="ts">
-    import { signOut } from "firebase/auth";
+    import { signOut, unlink, linkWithCredential, signInAnonymously, type User, type AuthCredential } from "firebase/auth";
+    
+    const auth = useFirebaseAuth()!;
+    const user = useCurrentUser();
+
     const signOutUser = async () => {
-        const auth = useFirebaseAuth()!;
-        const user = firebaseUser().value || await getUserDataPromised();
-        if (!user.isAnonymous) {
-            signOut(auth).catch(error => {
-                addToast({
-                    message: error,
-                    type: "error",
-                });
-            });
+        if (!user.value?.isAnonymous as boolean) {
+            // console.log(user.value)
+            // const anonymousUserCredential = await signInAnonymously(auth);
+            // linkWithCredential(user.value as User, anonymousUserCredential )
+            // await unlink(user.value as User, user.value?.providerData[0].providerId as string)
+            // .catch(error => {
+            //     addToast({
+            //         message: error,
+            //         type: "error",
+            //     });
+            // });
+            // signOut(auth).catch(error => {
+            //     addToast({
+            //         message: error,
+            //         type: "error",
+            //     });
+            // });
         } else {
             addToast({
                 message: "Already signedout. Can't signout again.",

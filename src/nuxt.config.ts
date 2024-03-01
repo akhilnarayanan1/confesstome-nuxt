@@ -22,10 +22,10 @@ export default defineNuxtConfig({
           measurementId: process.env.FIREBASE_MEASUREMENT_ID,
       },
     },
-	postcss: {
-		plugins: {
-		  tailwindcss: {},
-		  autoprefixer: {},
-		}
-	  }
+    postcss: {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      }
+    },
 })

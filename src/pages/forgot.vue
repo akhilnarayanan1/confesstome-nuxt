@@ -6,7 +6,7 @@
         <div class="text-4xl font-bold mb-4">Forgot Password</div>
         <div class="mb-4">Enter the e-mail associated with your account</div>
 
-        <form @submit.prevent="forgotPassword">
+        <form id="formForgotPassword" @submit.prevent="forgotPassword">
           <div class="form-control">
             <div class="relative input-group border rounded-lg">
               <div class="absolute mt-3 flex items-center ps-3.5">
@@ -32,7 +32,7 @@
 
   import _ from "lodash";
   import { sendPasswordResetEmail } from "firebase/auth";
-  import { type AlertData } from "@/assets/js/types";
+  import type { AlertData } from "@/assets/js/types";
   import { ForgotPasswordForm } from "@/assets/js/forms";
 
   let loading: { forgot: boolean } = reactive({ forgot: false });

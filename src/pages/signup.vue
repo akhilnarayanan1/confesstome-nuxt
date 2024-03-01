@@ -1,14 +1,12 @@
 <template>
-  <div v-if="loading.page">
-    Loading...
-  </div>
+  <div v-if="loading.page"><LoadingPage /></div>
   <div v-else class="flex items-center justify-center h-screen">
     <div class="card shadow max-w-sm m-4">
       <div class="card-body">
         <div class="text-4xl font-bold mb-4">Signup</div>
         <div class="mb-4">Already have an account? <NuxtLink to="/login" class="text-primary font-bold" replace>Login here</NuxtLink>, and stay ahead!</div>
 
-        <form @submit.prevent="createAccount">
+        <form id="formCreateAccount" @submit.prevent="createAccount">
           
           <div class="form-control">
             <div class="relative input-group border rounded-lg">
@@ -56,7 +54,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type AlertData, type ToastData } from "@/assets/js/types";
+  import type { AlertData, ToastData } from "@/assets/js/types";
   import { linkWithCredential, EmailAuthProvider, sendEmailVerification, type User } from "firebase/auth";
   import { SignupForm } from "@/assets/js/forms";
   

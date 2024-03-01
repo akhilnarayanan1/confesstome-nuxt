@@ -4,13 +4,13 @@
         <div class="modal-box">
             <h3 class="font-bold text-lg mb-4">Complete Profile</h3>
 
-            <form @submit.prevent="createAccount">
+            <form id="formCreateAccount" @submit.prevent="createAccount">
                 <div class="form-control">
                     <div class="relative input-group border rounded-lg">
                         <div class="absolute mt-3 flex items-center ps-3.5">
                             <span class="material-symbols-outlined">badge</span>
                         </div>
-                        <input v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input ps-12">
+                        <input id="inputName" v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input ps-12">
                     </div>
                     <InputLabel labelName="update_name"/>
                 </div>
@@ -20,7 +20,7 @@
                         <div class="absolute mt-3 flex items-center ps-3.5">
                             <span class="material-symbols-outlined">alternate_email</span>
                         </div>
-                        <input autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input ps-12"> 
+                        <input id="inputUsername" autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input ps-12"> 
                     </div>
                     <InputLabel labelName="update_username"/>
                 </div>
@@ -40,15 +40,31 @@
 </template>
 
 <script setup lang="ts">
-    import { type ToastData } from "@/assets/js/types";
+    import type { ToastData } from "@/assets/js/types";
     import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-    import { collection, query, where, getDocs } from "firebase/firestore";
+    import { collection, query, where, getDocs, and } from "firebase/firestore";
     import { CompleteProfileForm } from "@/assets/js/forms";
 
+    const currentUser = useCurrentUser();
     const db = useFirestore();
+    
+    watch(currentUser, (newCurrentUser) => {
+        if (newCurrentUser === undefined || newCurrentUser === null) {
+            //Stop processing if user is blank
+            addToast({
+                message: "Unknown error, Please try again (101)",
+                type: "error",
+                duration: 2000,
+            } as ToastData);
+            return;
+        } else {
+            isProfileCompleted();
+        };
+    });
     
     const loading = reactive({ continue: false });
     const completeProfileModal = reactive({ loading:true, open: false });
+    const emit = defineEmits(['loadProfile'])
 
     //Create a form
     const form = reactive({
@@ -57,10 +73,8 @@
     });
 
     const createAccount = async () => {
-        const currentUser = firebaseUser().value || await getUserDataPromised();
-
         //Stop processing if user is blank
-        if(!currentUser){
+        if(!currentUser.value){
             addToast({
                 message: "Unknown error, Please try again (101)",
                 type: "error",
@@ -75,7 +89,7 @@
 
         loading.continue = true;
 
-        const q = query(collection(db, "users"), where("username", "==", form.update_username));
+        const q = query(collection(db, "users"), and(where("username", "==", form.update_username), where("__name__", "!=", currentUser.value?.uid as string)));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
             addFieldAlert({
@@ -85,12 +99,13 @@
                 fieldid: "update_username",
             })
         } else {
-            await setDoc(doc(db, "users", currentUser.uid), {
+            await setDoc(doc(db, "users", currentUser.value?.uid as string), {
                 name: form.update_name,
                 username: form.update_username,
                 createdOn: serverTimestamp(),
             });
             completeProfileModal.open = false;
+            emit('loadProfile');
             addToast({
                 message: "Profile updated successfully!",
                 type: "success",
@@ -100,15 +115,12 @@
         loading.continue = false;
     };
 
-    onMounted(async ()=>{
-        const currentUser = firebaseUser().value || await getUserDataPromised();
-        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
-
+    const isProfileCompleted = async () => {
+        const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string));
         completeProfileModal.loading = false;
-
-        if (!currentUser.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
+        if (!currentUser.value?.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
             completeProfileModal.open = true;
         } 
-    });
+    };
 
 </script>

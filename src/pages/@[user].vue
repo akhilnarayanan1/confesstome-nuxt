@@ -1,14 +1,12 @@
 <template>
-  <div v-if="otherUser.loading">
-    Loading...
-  </div>
+  <div v-if="otherUser.loading"><LoadingPage /></div>
   <div v-else-if="otherUser.found">
     <!-- {{ user }} -->
     <div class="flex items-center justify-center h-screen">
       <div class="card shadow max-w-sm m-4">
         <div class="card-body">
-          <div class="text-4xl font-bold mb-4">What's there for me</div>
-          <form @submit.prevent="startThread">
+          <!-- <div class="text-4xl font-bold mb-4">What's there for me</div> -->
+          <form id="formStartThread" @submit.prevent="startThread">
             
             <div class="mb-4">Spill it out for {{ otherUser.name }}</div>
 
@@ -32,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-  import { type ToastData } from "@/assets/js/types";
+  import type { ToastData } from "@/assets/js/types";
   import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
   import { SendConfession } from "@/assets/js/forms";
 
@@ -80,16 +78,17 @@
 
     await addDoc((collection(db, "messages")), {
       to: otherUser.uid,
-      from: currentUser.value?.uid || "",
+      from: currentUser.value?.uid as string,
       message: form.send_confession,
       createdOn: serverTimestamp(),
-    })
+    });
 
     addToast({
       message: "Message sent successfully!",
       type: "success",
       duration: 3000,
-    })
+    });
+    form.send_confession = "";
     loading.sendMessage = false;
   };
 

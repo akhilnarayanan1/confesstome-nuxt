@@ -6,7 +6,7 @@
         <div class="text-4xl font-bold mb-4">Login</div>
         <div class="mb-4">Don't have an account?  <NuxtLink to="/signup" class="text-primary font-bold" replace>Create your account</NuxtLink>, it takes less than a minute</div>
 
-        <form @submit.prevent="loginAccount">
+        <form id="formLoginAccount" @submit.prevent="loginAccount">
           <div class="form-control">
             <div class="relative input-group border rounded-lg">
               <div class="absolute mt-3 flex items-center ps-3.5">
@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type ToastData } from "@/assets/js/types";
+  import type { ToastData } from "@/assets/js/types";
   import { signInWithEmailAndPassword, sendEmailVerification, type User } from "firebase/auth";
   import { LoginForm } from "@/assets/js/forms";
     

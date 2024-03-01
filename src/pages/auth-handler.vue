@@ -24,18 +24,22 @@
           <div class="card-body">
             <div class="text-4xl font-bold mb-4">Reset Password</div>
             <div class="my-4">Hi {{ maskedEmail }}, please enter your new password</div>
-            <form @submit.prevent="resetPassword">
+            <form id="formResetPassword" @submit.prevent="resetPassword">
               <div class="form-control">
-                <div class="input-group border rounded-lg">
-                  <span class="bg-transparent">🔒</span>
-                  <input v-model="form.reset_password" type="password" placeholder="Choose a password" class="w-full input" autocomplete="false"> 
+                <div class="relative input-group border rounded-lg">
+                  <div class="absolute mt-3 flex items-center ps-3.5">
+                    <span class="material-symbols-outlined">lock</span>
+                  </div>
+                  <input v-model="form.reset_password" type="password" placeholder="Choose a password" class="w-full input ps-12" autocomplete="false"> 
                 </div>  
                 <InputLabel labelName="reset_password"></InputLabel>
               </div> 
               <div class="form-control">
-                <div class="input-group border rounded-lg">
-                  <span class="bg-transparent">🔒</span>
-                  <input v-model="form.reset_confirm_password" type="password" placeholder="Confirm your password" class="w-full input" autocomplete="false"> 
+                <div class="relative input-group border rounded-lg">
+                  <div class="absolute mt-3 flex items-center ps-3.5">
+                    <span class="material-symbols-outlined">lock</span>
+                  </div>
+                  <input v-model="form.reset_confirm_password" type="password" placeholder="Confirm your password" class="w-full input ps-12" autocomplete="false"> 
                 </div>  
                 <InputLabel labelName="reset_confirm_password"/>
               </div> 
@@ -60,7 +64,7 @@
 
 <script setup lang="ts">
   import _ from "lodash";
-  import { type ToastData } from "@/assets/js/types";
+  import type { ToastData } from "@/assets/js/types";
   import { maskMail } from "@/assets/js/functions";
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
   import { ResetPasswordForm } from "@/assets/js/forms";
@@ -78,7 +82,7 @@
 
   const query = route.query;
   const mode = query.mode?.toString();
-  const actionCode = query.oobCode?.toString() || "";
+  const actionCode = query.oobCode?.toString() as string;
   const continueUrl = query.continueUrl?.toString();
   const lang = query.lang?.toString() || "en";
 
@@ -172,6 +176,7 @@
         addToast({
           message: "Password changed successfully",
           type: "success",
+          duration: 2000,
         } as ToastData);
       }).catch((err) => {
         loading.reset = false;
