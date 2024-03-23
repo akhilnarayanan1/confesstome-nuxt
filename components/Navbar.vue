@@ -8,6 +8,14 @@
         <div class="flex-1">
             <a class="btn btn-ghost normal-case text-xl">ConfessTo.Me</a>
         </div>
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="btn">Theme</div>
+            <ul tabindex="0" class="dropdown-content z-[1] shadow-2xl menu bg-base-200 rounded-box">
+                <li><input type="radio" name="theme-dropdown" class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Light" value="light"/></li>
+                <li><input type="radio" name="theme-dropdown" class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Dark" value="dark"/></li>
+                <li><input type="radio" name="theme-dropdown" class="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Default" value="default"/></li>
+            </ul>
+        </div>
         <div class="flex-none">
             <button class="btn btn-ghost btn-circle">
                 <div class="indicator">

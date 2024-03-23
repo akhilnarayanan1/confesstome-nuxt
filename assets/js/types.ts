@@ -28,9 +28,17 @@ interface FirestoreUserProfile{
   username: string
 };
 
+interface MessageDetails {
+  message: string,
+  from: string,
+  to: string,
+  createdOn: Timestamp, 
+};
+
 export type {
   AlertData,
   ToastData,
   RandomKeyValue,
   FirestoreUserProfile,
+  MessageDetails,
 };
