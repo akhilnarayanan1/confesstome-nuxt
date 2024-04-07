@@ -1,15 +1,18 @@
 <template>
     <div>
-        <Navbar/>
-        <div v-for="message in messages" :key="message.to">
-            <div class="card outline outline-1 m-2">
+        
+        <div v-if="loading.messages"><LoadingPage /></div>
+        <div v-else>
+          <Navbar />
+          <div v-for="message in messages" :key="message.to">
+              <div class="card outline outline-1 m-2">
                 <div class="card-body">
-                    <h2 class="card-title"><div>Anonymous</div><div>asdf</div></h2>
-                    <p>{{ message.message }}</p>
+                  <h2 class="card-title"><div>Anonymous</div><div>asdf</div></h2>
+                  <p>{{ message.message }}</p>
                 </div>
-            </div>
+              </div>
+          </div>
         </div>
-
     </div>
 </template>
 <script setup lang="ts">
@@ -20,6 +23,7 @@
   const currentUser = useCurrentUser();
   const db = useFirestore();
 
+  const loading = reactive({ messages: true })
   const messages = ref([] as MessageDetails[])
 
   onMounted(() => { 
@@ -40,11 +44,12 @@
         } as ToastData);
         return;
       };
-
+    loading.messages = true;
     const q = await query(collection(db, "messages"), where("to", "==", currentUser.value?.uid as string));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
+      loading.messages = false;
       messages.value.push(doc.data() as MessageDetails)
     });
 
