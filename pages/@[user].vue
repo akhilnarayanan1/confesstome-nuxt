@@ -33,6 +33,7 @@
   import type { ToastData } from "@/assets/js/types";
   import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
   import { SendConfession } from "@/assets/js/forms";
+  import { useIsCurrentUserLoaded } from "vuefire";
 
   const db = useFirestore()!;
   const route = useRoute();
@@ -93,6 +94,19 @@
   };
 
   onMounted(async ()=> {
+    if (!useIsCurrentUserLoaded().value) {
+      watch(() => currentUser.value, (newCurrentUser) => loadOtherAccount());
+    } else {
+      loadOtherAccount();
+    }
+  });
+
+  const loadOtherAccount = async () => {
+
+    // Suppress Permission error
+    if(currentUser.value == undefined) {
+      return;
+    };
 
     const q = query(collection(db, "users"), where("username", "==", route.params.user));
     const querySnapshot = await getDocs(q);
@@ -107,7 +121,6 @@
       otherUser.username = username;
       otherUser.uid = id;
     }
-  
-  });
+  };
   
 </script>
