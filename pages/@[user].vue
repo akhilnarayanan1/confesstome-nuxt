@@ -34,6 +34,7 @@
   import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
   import { SendConfession } from "@/assets/js/forms";
   import { useIsCurrentUserLoaded } from "vuefire";
+  import { faker } from "@faker-js/faker";
 
   const db = useFirestore()!;
   const route = useRoute();
@@ -47,6 +48,20 @@
   const form = reactive({ send_confession: ''});
 
   const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
+
+  const getFakeNameAndImage = async () => {
+    const apiUrl = 'https://api.color.pizza';
+    const fakecolor = faker.color.rgb({format: 'hex', prefix: ''});
+    const { data: color } = await useFetch(apiUrl + '/v1/'+ fakecolor + '?values=&list=bestOf');
+
+    const approxColor = (toRaw(color.value) as { colors: { name: string }[] }).colors[0].name;
+    const approxImage = (toRaw(color.value) as { colors: { swatchImg: {svg: string} }[] }).colors[0].swatchImg.svg;
+    
+    const fakename = approxColor;
+    const fakeimage = apiUrl + approxImage;
+
+    return {fakename, fakeimage};
+  };
 
   const startThread = async () => {
 
@@ -64,7 +79,6 @@
     const sendConfession = new SendConfession(form);
     if (!sendConfession.checkFormValid()) return;
 
-    
     loading.sendMessage = true;
 
     if (otherUser.uid === currentUser.value?.uid) {
@@ -77,11 +91,15 @@
       return;
     };
 
+    const {fakename, fakeimage} = await getFakeNameAndImage();
+
     await addDoc((collection(db, "messages")), {
       to: otherUser.uid,
       from: currentUser.value?.uid as string,
       message: form.send_confession,
       createdOn: serverTimestamp(),
+      fakename: fakename,
+      fakeimage: fakeimage,
     });
 
     addToast({

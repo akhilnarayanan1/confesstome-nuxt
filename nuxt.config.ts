@@ -5,6 +5,7 @@ export default defineNuxtConfig({
       '@nuxt/devtools',
       'nuxt-vuefire',
       '@nuxtjs/tailwindcss',
+      '@nuxt/image',
     ],
     css: ["@/assets/css/main.css"],
     // hiding config until we setup DB security 🔒

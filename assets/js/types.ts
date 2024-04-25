@@ -32,7 +32,9 @@ interface MessageDetails {
   message: string,
   from: string,
   to: string,
-  createdOn: Timestamp, 
+  createdOn: Timestamp,
+  fakename: string,
+  fakeimage: string,
 };
 
 export type {
