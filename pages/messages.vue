@@ -1,10 +1,9 @@
 <template>
     <div>
         
-        <div v-if="loading.messages"><LoadingPage /></div>
+        <div v-if="loading.messages"><LoadingChats /></div>
         <div v-else>
           <Navbar />
-
           <!-- <ul class="menu bg-base-200 rounded-box m-4 shadow-md">
             <div v-for="(message) in messages" >
             <li>
@@ -15,28 +14,25 @@
             </li>
             </div>
           </ul> -->
-
-
-
           <section class="flex flex-col justify-center p-4">
             <div class="h-full">
               <div class="relative mx-auto shadow-lg rounded-lg">
-                  <div class="py-3 px-5">
-                    <h3 class="text-xs font-semibold uppercase text-gray-400 mb-1">Chats</h3>
-                    <div class="">
-                      <div v-for="message in messages">
-                        <button class="w-full text-left py-2">
-                          <div class="flex items-center">
-                            <NuxtImg class="rounded-full items-start flex-shrink-0 mr-3" :height="32" :width="32" :src="message.fakeimage" alt="" />
-                            <div>
-                              <h4 class="text-sm font-semibold">{{ message.fakename }}</h4>
-                              <div class="text-[13px] line-clamp-1">{{ message.message }}</div>
-                            </div>
+                <div class="py-3 px-5">
+                  <h3 class="text-xs font-semibold uppercase text-gray-400 mb-1">Chats</h3>
+                  <div class="">
+                    <div v-for="message in messages">
+                      <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2">
+                        <div class="flex items-center">
+                          <NuxtImg class="rounded-full items-start flex-shrink-0 mr-3" :height="32" :width="32" :src="message.fakeimage" alt="" />
+                          <div>
+                            <h4 class="text-sm font-semibold">{{ message.fakename }}</h4>
+                            <div class="text-[13px] line-clamp-1">{{ message.message }}</div>
                           </div>
-                        </button>
-                      </div>
+                        </div>
+                      </button>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
           </section> 
