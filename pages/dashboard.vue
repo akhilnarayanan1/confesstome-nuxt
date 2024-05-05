@@ -1,14 +1,10 @@
 <template>
   <div>
-    <div v-if="loading.page"><LoadingPage /></div>
+    <div v-if="loading.page"><CircleLoad /></div>
+    <!-- <div v-else-if="!profile.username"><LoadingDashboard /></div> -->
     <div v-else>
-      <Navbar />
-      <CompleteProfile @load-profile.once="loadProfile" />
-      <div v-if="!profile.username" class="skeleton h-14"></div>
-      <div v-else class="alert alert-success">
-        <span>https://confessto.me/@{{ profile.username }}</span>
-        <span class="material-symbols-outlined">content_copy</span>
-      </div>
+      <CompleteProfile @load-profile="loadProfile" />
+      <Dashboard :profile />
     </div>
   </div>
 </template>
