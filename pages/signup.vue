@@ -47,6 +47,12 @@
             <span>CREATE ACCOUNT</span>
           </button>
         </form>
+        
+          <!-- <button class="btn btn-block bg-error hover:bg-error text-white">
+            <span v-if="loading.signup" class="loading loading-spinner loading-sm"></span>
+            <NuxtImg format="auto" src="/icons8-google.svg" alt="Google Logo" class="w-6 h-6 inline-block"/>
+            <span>GOOGLE SIGNUP</span>
+          </button> -->
       </div>
     </div> 
   </div>

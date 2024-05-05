@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-if="loading.page"><CircleLoad /></div>
-    <!-- <div v-else-if="!profile.username"><LoadingDashboard /></div> -->
     <div v-else>
       <CompleteProfile @load-profile="loadProfile" />
       <Dashboard :profile />

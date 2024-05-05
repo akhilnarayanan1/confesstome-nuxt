@@ -23,13 +23,32 @@
                 </div>
             </div>
         </div>
+
+        <div class="mx-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="stats shadow">
+                <div class="stat">
+                    <div class="stat-title">Total Messages Received</div>
+                    <div class="stat-value">89,400</div>
+                    <div class="stat-desc">21% more than last month</div>
+                </div>
+            </div>
+
+            <div class="stats shadow">
+                <div class="stat">
+                    <div class="stat-title">Total Messages Sent</div>
+                    <div class="stat-value">89,400</div>
+                    <div class="stat-desc">21% more than last month</div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  profile: {
-    username: string;
-  };
-}>();
+    const props = defineProps<{
+        profile: {
+            username: string;
+        };
+    }>();
 </script>
