@@ -25,6 +25,7 @@
     "firebase-functions": "^4.1.0",
     "lodash": "^4.17.21",
     "nuxt-vuefire": "^1.0.2",
+    "theme-change": "^2.5.0",
     "vuefire": "^3.1.17"
   }
 }
