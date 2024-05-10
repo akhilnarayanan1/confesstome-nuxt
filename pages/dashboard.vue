@@ -3,7 +3,7 @@
     <div v-if="loading.page"><CircleLoad /></div>
     <div v-else>
       <CompleteProfile @load-profile="loadProfile" />
-      <Dashboard :profile />
+      <Dashboard />
     </div>
   </div>
 </template>
@@ -11,7 +11,7 @@
 <script setup lang="ts">
 
   import { doc, getDoc } from "firebase/firestore";
-  import type {  FirestoreUserProfile, ToastData } from "@/assets/js/types";
+  import type { FirestoreUserProfile, ToastData } from "@/assets/js/types";
   import { useFirestore, useIsCurrentUserLoaded } from "vuefire";
 
   //Set and clear field alert on page load
@@ -19,7 +19,6 @@
   clearToasts(); 
 
   const loading = reactive({ page: true });
-  const profile: FirestoreUserProfile = reactive({ createdOn: "", name: "", username: "" });
 
   const currentUser = useCurrentUser();
   const db = useFirestore();
@@ -56,10 +55,8 @@
     };
 
     const { createdOn, name, username } = querySnapshot.data() as FirestoreUserProfile;
+    setProfile({ createdOn, name, username });
 
-    profile.createdOn = createdOn;
-    profile.name = name;
-    profile.username = username;
   };
 
 </script>

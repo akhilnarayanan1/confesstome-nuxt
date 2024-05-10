@@ -1,5 +1,4 @@
 <template>
-    <LoadingNavbar />
     <section class="flex flex-col justify-center p-4">
         <div class="h-full">
             <div class="relative mx-auto shadow-lg rounded-lg">

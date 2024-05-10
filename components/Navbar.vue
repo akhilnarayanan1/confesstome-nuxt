@@ -18,7 +18,7 @@
                 <div tabindex="0" role="button" class="btn btn-ghost">
                     <span class="material-symbols-outlined">more_vert</span>
                 </div>
-                <ul v-if="!props.profile.username" tabindex="0" class="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                <ul v-if="!profile.username" tabindex="0" class="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-52 mt-4">
                     <div v-for="_ in Array.from({length: 5})">
                         <li><a class="skeleton h-3 w-14 my-2"></a></li> 
                     </div>
@@ -56,6 +56,8 @@
 
     const isDark = ref(false);
 
+    const profile = getProfile();
+
     onMounted(() => {
         isDark.value = localStorage.getItem("theme") === "dark" ? true : false;
         themeChange(false);
@@ -88,7 +90,4 @@
         };
     };
 
-    const props = defineProps<{
-        profile: FirestoreUserProfile;
-    }>();
 </script>

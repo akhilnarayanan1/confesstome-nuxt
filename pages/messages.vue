@@ -1,9 +1,8 @@
 <template>
     <div>
-        
+        <Navbar />
         <div v-if="loading.messages"><LoadingChats /></div>
         <div v-else>
-          <Navbar />
           <!-- <ul class="menu bg-base-200 rounded-box m-4 shadow-md">
             <div v-for="(message) in messages" >
             <li>
