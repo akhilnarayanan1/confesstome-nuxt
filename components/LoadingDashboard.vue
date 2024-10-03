@@ -1,5 +1,5 @@
 <template>
-    <LoadingNavbar />
+    <!-- <LoadingNavbar /> -->
     <div class="skeleton h-14"></div>
 </template>
 

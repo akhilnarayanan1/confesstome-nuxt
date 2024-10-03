@@ -1,5 +1,5 @@
 <template>
-  <div v-if="otherUser.loading"><LoadingPage /></div>
+  <div v-if="otherUser.loading"><CircleLoad /></div>
   <div v-else-if="otherUser.found">
     <!-- {{ user }} -->
     <div class="flex items-center justify-center h-screen">
@@ -49,18 +49,17 @@
 
   const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
 
-  const getFakeNameAndImage = async () => {
-    const apiUrl = 'https://api.color.pizza';
-    const fakecolor = faker.color.rgb({format: 'hex', prefix: ''});
-    const { data: color } = await useFetch(apiUrl + '/v1/'+ fakecolor + '?values=&list=bestOf');
+  const getFakeNameAndImage = (userid: string) => {
+      let charVal = [];
+      for (let i = 0; i < userid.length; i++) {
+        charVal.push(userid.charCodeAt(i));
+      }
+      faker.seed(charVal);
+      
+      const fakename = faker.person.fullName();
+      const fakecolor = faker.color.rgb({format: 'hex', prefix: '#'});
 
-    const approxColor = (toRaw(color.value) as { colors: { name: string }[] }).colors[0].name;
-    const approxImage = (toRaw(color.value) as { colors: { swatchImg: {svg: string} }[] }).colors[0].swatchImg.svg;
-    
-    const fakename = approxColor;
-    const fakeimage = apiUrl + approxImage;
-
-    return {fakename, fakeimage};
+      return {fakename, fakecolor};
   };
 
   const startThread = async () => {
@@ -91,7 +90,7 @@
       return;
     };
 
-    const {fakename, fakeimage} = await getFakeNameAndImage();
+    const {fakename, fakecolor} = getFakeNameAndImage(currentUser.value.uid);
 
     await addDoc((collection(db, "messages")), {
       to: otherUser.uid,
@@ -99,7 +98,7 @@
       message: form.send_confession,
       createdOn: serverTimestamp(),
       fakename: fakename,
-      fakeimage: fakeimage,
+      fakecolor: fakecolor,
     });
 
     addToast({

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading.page"><LoadingPage /></div>
+  <div v-if="loading.page"><CircleLoad /></div>
   <div v-else class="flex items-center justify-center h-screen">
     <div class="card shadow max-w-sm m-4">
       <div class="card-body">

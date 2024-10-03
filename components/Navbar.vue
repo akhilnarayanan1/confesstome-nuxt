@@ -49,7 +49,6 @@
 
 <script setup lang="ts">
     import { themeChange } from "theme-change";
-    import type { FirestoreUserProfile } from "@/assets/js/types";
 
     const auth = useFirebaseAuth()!;
     const user = useCurrentUser();

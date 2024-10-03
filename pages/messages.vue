@@ -22,7 +22,7 @@
                     <div v-for="message in messages">
                       <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2">
                         <div class="flex items-center">
-                          <NuxtImg class="rounded-full items-start flex-shrink-0 mr-3" :height="32" :width="32" :src="message.fakeimage" alt="" />
+                          <div class= "rounded-full h-10 w-10 mr-2":style="{'background-color': message.fakecolor}"></div>
                           <div>
                             <h4 class="text-sm font-semibold">{{ message.fakename }}</h4>
                             <div class="text-[13px] line-clamp-1">{{ message.message }}</div>
@@ -47,9 +47,12 @@
   const currentUser = useCurrentUser();
   const db = useFirestore();
 
-  const loading = reactive({ messages: true })
+  const loading = reactive({ page: true, messages: true })
   const messages = ref([] as MessageDetails[])
 
+  watchEffect(() => loading.page = currentUser == undefined);
+
+  const profile = getProfile();
   const groupedByFrom = computed(() => _.groupBy(messages.value, (message) => message.from));
 
   onMounted(() => { 
@@ -71,7 +74,7 @@
         return;
       };
     loading.messages = true;
-    const q = await query(
+    const q = query(
       collection(db, "messages"),
       where("to", "==", currentUser.value?.uid as string),
       orderBy("createdOn", "desc") // Order by "createdOn" in descending order

@@ -34,7 +34,7 @@ interface MessageDetails {
   to: string,
   createdOn: Timestamp,
   fakename: string,
-  fakeimage: string,
+  fakecolor: string,
 };
 
 export type {
