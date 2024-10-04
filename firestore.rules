@@ -7,12 +7,17 @@ service cloud.firestore {
     
     match /users/{userId} {
     	allow read: if isSignedIn();
-      allow create, update: if isOwner(userId);
+      allow create, update: if isSignedIn() && isOwner(userId);
     }
     
-    match /messages/{messageId}{
+    match /messages/{messageId} {
     	allow read: if isSignedIn() && isReceiver();
       allow create: if isSender() && !isSenderReciverSame();
+    }
+    
+    match /replies/{replyId} {
+    	allow read: if isSignedIn() && isReceiver();
+      allow create: if isSignedIn() && isSender() && !isSenderReciverSame();
     }
     
     // Functions //
@@ -29,7 +34,7 @@ service cloud.firestore {
     }
     
     function isReceiver() {
-    	return request.auth.uid == request.resource.data.to;
+    	return request.auth.uid == resource.data.to;
     }
     
     function isSenderReciverSame() {
