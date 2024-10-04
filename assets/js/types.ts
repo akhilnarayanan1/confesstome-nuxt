@@ -29,6 +29,7 @@ interface FirestoreUserProfile{
 };
 
 interface MessageDetails {
+  docid: string,
   message: string,
   from: string,
   to: string,

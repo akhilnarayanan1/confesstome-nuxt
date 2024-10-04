@@ -3,16 +3,6 @@
         <Navbar />
         <div v-if="loading.messages"><LoadingChats /></div>
         <div v-else>
-          <!-- <ul class="menu bg-base-200 rounded-box m-4 shadow-md">
-            <div v-for="(message) in messages" >
-            <li>
-              <h2 class="menu-title">{{message.from }}</h2>
-              <ul>
-                <li><a class="line-clamp-1"><p>{{ message.message }}</p></a></li> 
-              </ul>
-            </li>
-            </div>
-          </ul> -->
           <section class="flex flex-col justify-center p-4">
             <div class="h-full">
               <div class="relative mx-auto shadow-lg rounded-lg">
@@ -20,10 +10,12 @@
                   <h3 class="text-xs font-semibold uppercase text-gray-400 mb-1">Chats</h3>
                   <div class="">
                     <div v-for="message in messages">
-                      <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2">
+                      <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2" @click="navigateTo({
+                        path: '/reply', query: {cid: message.docid, uid: message.from, meid: message.to},
+                      })">
                         <div class="flex items-center">
-                          <div class= "rounded-full h-10 w-10 mr-2":style="{'background-color': message.fakecolor}"></div>
-                          <div>
+                          <div class= "rounded-full mr-2" :style="{'background-color': message.fakecolor, 'min-width': '32px', 'min-height': '32px' }"></div>
+                          <div class="flex-grow">
                             <h4 class="text-sm font-semibold">{{ message.fakename }}</h4>
                             <div class="text-[13px] line-clamp-1">{{ message.message }}</div>
                           </div>
@@ -52,8 +44,7 @@
 
   watchEffect(() => loading.page = currentUser == undefined);
 
-  const profile = getProfile();
-  const groupedByFrom = computed(() => _.groupBy(messages.value, (message) => message.from));
+  // const groupedByFrom = computed(() => _.groupBy(messages.value, (message) => message));
 
   onMounted(() => { 
     if (!useIsCurrentUserLoaded().value) {
@@ -84,7 +75,7 @@
     loading.messages = false;
 
     querySnapshot.forEach((doc) => {
-      messages.value.push(doc.data() as MessageDetails);
+      messages.value.push({docid: doc.id, ...doc.data()} as MessageDetails);
     });
 
 
