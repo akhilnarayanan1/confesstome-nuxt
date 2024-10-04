@@ -90,8 +90,23 @@
         loading.continue = true;
 
         const q = query(collection(db, "users"), and(where("username", "==", form.update_username), where("__name__", "!=", currentUser.value?.uid as string)));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
+        const querySnapshot = await getDocs(q).catch((err) => {
+            let errmsg;
+            switch(err.code) {
+                case "permission-denied":
+                    errmsg = "Invalid Permission, Something went wrong (401)";
+                    break;
+                default:
+                    errmsg = err
+                    break;
+            };
+            addToast({
+                message: errmsg,
+                type: "error",
+                duration: 2000,
+            } as ToastData);
+        });
+        if (!querySnapshot || !querySnapshot.empty) {
             addFieldAlert({
                 message: "User already exist. Pick another username.",
                 source: "server",
@@ -116,9 +131,24 @@
     };
 
     const isProfileCompleted = async () => {
-        const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string));
+        const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string)).catch((err) => {
+            let errmsg;
+            switch(err.code) {
+                case "permission-denied":
+                    errmsg = "Invalid Permission, Something went wrong (401)";
+                    break;
+                default:
+                    errmsg = err
+                    break;
+            };
+            addToast({
+                message: errmsg,
+                type: "error",
+                duration: 2000,
+            } as ToastData);
+        });
         completeProfileModal.loading = false;
-        if (!currentUser.value?.isAnonymous && (!userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
+        if (!currentUser.value?.isAnonymous && (!userSnap || !userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
             completeProfileModal.open = true;
         } 
     };

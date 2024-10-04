@@ -3,12 +3,13 @@
     <NuxtPage />
     <Toast /> 
     <CompleteProfile @load-profile="loadProfile(user)" />
+    <div>-----------------------</div>
     {{ getProfile() }}
   </div>
 </template>
 
 <script setup lang="ts">
-  import { onAuthStateChanged, signInAnonymously, type Auth } from "firebase/auth";
+  import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
   import { useFirestore } from "vuefire";
   import { doc, getDoc } from "firebase/firestore";
   import type { FirestoreUserProfile, ToastData } from "@/assets/js/types";
@@ -31,9 +32,24 @@
   });
 
   const loadProfile = async (user: User) => {
-    const querySnapshot = await getDoc(doc(db, "users", user.uid as string));
+    const querySnapshot = await getDoc(doc(db, "users", user.uid as string)).catch((err) => {
+        let errmsg;
+        switch(err.code) {
+          case "permission-denied":
+            errmsg = "Invalid Permission, Something went wrong (401)";
+            break;
+          default:
+            errmsg = err
+            break;
+        };
+        addToast({
+            message: errmsg,
+            type: "error",
+            duration: 2000,
+        } as ToastData);
+    });
 
-    if (!querySnapshot.exists()) {
+    if (!querySnapshot || !querySnapshot.exists()) {
       addToast({
         message: "Please complete your profile to continue.",
         type: "error",

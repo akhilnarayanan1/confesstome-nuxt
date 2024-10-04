@@ -11,7 +11,7 @@
                   <div class="">
                     <div v-for="message in messages">
                       <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2" @click="navigateTo({
-                        path: '/reply', query: {cid: message.docid, uid: message.from, meid: message.to},
+                        path: '/reply', query: {cid: message.docid},
                       })">
                         <div class="flex items-center">
                           <div class= "rounded-full mr-2" :style="{'background-color': message.fakecolor, 'min-width': '32px', 'min-height': '32px' }"></div>
@@ -71,9 +71,34 @@
       orderBy("createdOn", "desc") // Order by "createdOn" in descending order
     );
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q).catch((err) => {
+        let errmsg;
+        switch(err.code) {
+          case "permission-denied":
+            errmsg = "Invalid Permission, Something went wrong (401)";
+            break;
+          default:
+            errmsg = err
+            break;
+        };
+        addToast({
+          message: errmsg,
+          type: "error",
+          duration: 2000,
+        } as ToastData);
+    });
+
     loading.messages = false;
 
+    if (!querySnapshot || querySnapshot.empty) {
+      addToast({
+        message: "No messages found",
+        type: "error",
+        duration: 2000,
+      } as ToastData)
+      return;
+    } 
+    
     querySnapshot.forEach((doc) => {
       messages.value.push({docid: doc.id, ...doc.data()} as MessageDetails);
     });

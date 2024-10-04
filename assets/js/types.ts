@@ -38,10 +38,21 @@ interface MessageDetails {
   fakecolor: string,
 };
 
+interface ReplyDetails {
+  cid: string,
+  reply: string,
+  from: string,
+  to: string,
+  createdOn: Timestamp,
+  fakename: string,
+  fakecolor: string,
+};
+
 export type {
   AlertData,
   ToastData,
   RandomKeyValue,
   FirestoreUserProfile,
   MessageDetails,
+  ReplyDetails,
 };

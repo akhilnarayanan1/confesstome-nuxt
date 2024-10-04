@@ -126,12 +126,28 @@
     };
 
     const q = query(collection(db, "users"), where("username", "==", route.params.user));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q).catch((err) => {
+        let errmsg;
+        switch(err.code) {
+          case "permission-denied":
+            errmsg = "Invalid Permission, Something went wrong (401)";
+            break;
+          default:
+            errmsg = err
+            break;
+        };
+        addToast({
+            message: errmsg,
+            type: "error",
+            duration: 2000,
+        } as ToastData);
+    });
 
     otherUser.loading = false;
-    querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
 
-    if (!querySnapshot.empty) {
+    !querySnapshot || querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
+
+    if (querySnapshot && !querySnapshot.empty) {
       const id = querySnapshot.docs[0].id;
       const { name, username } =  querySnapshot.docs[0].data();
       otherUser.name = name;
