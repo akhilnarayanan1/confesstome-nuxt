@@ -34,7 +34,7 @@
   import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
   import { SendConfession } from "@/assets/js/forms";
   import { useIsCurrentUserLoaded } from "vuefire";
-  import { faker } from "@faker-js/faker";
+  import { getFakeNameAndImage } from "@/assets/js/functions";
 
   const db = useFirestore()!;
   const route = useRoute();
@@ -48,19 +48,6 @@
   const form = reactive({ send_confession: ''});
 
   const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
-
-  const getFakeNameAndImage = (userid: string) => {
-      let charVal = [];
-      for (let i = 0; i < userid.length; i++) {
-        charVal.push(userid.charCodeAt(i));
-      }
-      faker.seed(charVal);
-      
-      const fakename = faker.person.fullName();
-      const fakecolor = faker.color.rgb({format: 'hex', prefix: '#'});
-
-      return {fakename, fakecolor};
-  };
 
   const startThread = async () => {
 
@@ -92,20 +79,29 @@
 
     const {fakename, fakecolor} = getFakeNameAndImage(currentUser.value.uid);
 
-    await addDoc((collection(db, "messages")), {
+    const reponse = await addDoc((collection(db, "messages")), {
       to: otherUser.uid,
       from: currentUser.value?.uid as string,
       message: form.send_confession,
       createdOn: serverTimestamp(),
       fakename: fakename,
       fakecolor: fakecolor,
+    }).catch((err) => {
+      addToast({
+        message: err,
+        type: "error",
+        duration: 2000,
+      } as ToastData);
     });
 
-    addToast({
-      message: "Message sent successfully!",
-      type: "success",
-      duration: 3000,
-    });
+    if (reponse) {
+      addToast({
+        message: "Message sent successfully!",
+        type: "success",
+        duration: 3000,
+      });
+    };
+
     form.send_confession = "";
     loading.sendMessage = false;
   };
@@ -120,24 +116,10 @@
 
   const loadOtherAccount = async () => {
 
-    // Suppress Permission error
-    if(currentUser.value == undefined) {
-      return;
-    };
-
     const q = query(collection(db, "users"), where("username", "==", route.params.user));
     const querySnapshot = await getDocs(q).catch((err) => {
-        let errmsg;
-        switch(err.code) {
-          case "permission-denied":
-            errmsg = "Invalid Permission, Something went wrong (401)";
-            break;
-          default:
-            errmsg = err
-            break;
-        };
         addToast({
-            message: errmsg,
+            message: err,
             type: "error",
             duration: 2000,
         } as ToastData);

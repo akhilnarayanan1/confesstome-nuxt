@@ -286,6 +286,37 @@ class SendConfession {
     }) > -1) ? false : true;
   };
 };
+
+
+interface TSendReply {
+  send_reply: string; 
+}
+class SendReply {
+  form: TSendReply | RandomKeyValue;
+  constructor (form: TSendReply | RandomKeyValue) {
+    this.form = form;
+    watchAlert(this.form as RandomKeyValue);
+  }
+  checkRequiredFields() {
+    if(this.form.send_reply.length <= 0){
+      addFieldAlert({
+        message: "Write something...",
+        type: "error",
+        source: "ui",
+        fieldid: "send_reply",
+      } as AlertData);
+    };
+  };
+  checkFormValid() {
+    this.checkRequiredFields();
+    let fieldAlert = getFieldAlerts();
+    return (_.findIndex(fieldAlert.value, {
+      source: "ui", 
+      type: "error"
+    }) > -1) ? false : true;
+  };
+};
+
  
 
 export {
@@ -295,4 +326,5 @@ export {
   ResetPasswordForm,
   CompleteProfileForm,
   SendConfession,
+  SendReply,
 }

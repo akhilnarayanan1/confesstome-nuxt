@@ -39,6 +39,8 @@ interface MessageDetails {
 };
 
 interface ReplyDetails {
+  id: string
+  docid: string,
   cid: string,
   reply: string,
   from: string,
@@ -46,6 +48,10 @@ interface ReplyDetails {
   createdOn: Timestamp,
   fakename: string,
   fakecolor: string,
+  metadata: {
+    hasPendingWrites: boolean,
+    fromCache: boolean,
+  }
 };
 
 export type {

@@ -91,17 +91,8 @@
 
         const q = query(collection(db, "users"), and(where("username", "==", form.update_username), where("__name__", "!=", currentUser.value?.uid as string)));
         const querySnapshot = await getDocs(q).catch((err) => {
-            let errmsg;
-            switch(err.code) {
-                case "permission-denied":
-                    errmsg = "Invalid Permission, Something went wrong (401)";
-                    break;
-                default:
-                    errmsg = err
-                    break;
-            };
             addToast({
-                message: errmsg,
+                message: err,
                 type: "error",
                 duration: 2000,
             } as ToastData);
@@ -132,17 +123,8 @@
 
     const isProfileCompleted = async () => {
         const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string)).catch((err) => {
-            let errmsg;
-            switch(err.code) {
-                case "permission-denied":
-                    errmsg = "Invalid Permission, Something went wrong (401)";
-                    break;
-                default:
-                    errmsg = err
-                    break;
-            };
             addToast({
-                message: errmsg,
+                message: err,
                 type: "error",
                 duration: 2000,
             } as ToastData);

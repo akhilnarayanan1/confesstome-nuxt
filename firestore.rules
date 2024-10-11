@@ -11,13 +11,13 @@ service cloud.firestore {
     }
     
     match /messages/{messageId} {
-    	allow read: if isSignedIn() && isReceiver();
-      allow create: if isSender() && !isSenderReciverSame();
+      allow read: if isSignedIn() && isEitherSenderOrReceiverRead();
+      allow create: if isSignedIn() && isSender() && !isSenderReciverSame();
     }
     
     match /replies/{replyId} {
-    	allow read: if isSignedIn() && isReceiver();
-      allow create: if isSignedIn() && isSender() && !isSenderReciverSame();
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
     }
     
     // Functions //
@@ -25,27 +25,23 @@ service cloud.firestore {
     // 	return exists(/databases/$(database)/documents/users/$(request.auth.uid))
     // }
     
-    // function byOwner(){
-    // 	return request.auth.uid == request.resource.data.userid
-    // };
-    
-    function isSender() {
-    	return request.auth.uid == request.resource.data.from;
+    function isEitherSenderOrReceiverRead() {
+    	return (resource.data.to == request.auth.uid) || (resource.data.from == request.auth.uid);
     }
     
-    function isReceiver() {
-    	return request.auth.uid == resource.data.to;
+    function isSender() {
+    	return (request.resource.data.from == request.auth.uid)
     }
     
     function isSenderReciverSame() {
     	return request.resource.data.to == request.resource.data.from;
     } 
     
-    function isOwner(userId){
+    function isOwner(userId) {
     	return request.auth.uid == userId;
     }
     
-    function isSignedIn(){
+    function isSignedIn() {
     	return request.auth != null;
     }
     

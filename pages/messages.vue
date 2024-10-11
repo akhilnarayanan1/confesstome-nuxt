@@ -67,42 +67,24 @@
     loading.messages = true;
     const q = query(
       collection(db, "messages"),
-      where("to", "==", currentUser.value?.uid as string),
+      where("to", "==", currentUser.value.uid as string),
       orderBy("createdOn", "desc") // Order by "createdOn" in descending order
     );
 
     const querySnapshot = await getDocs(q).catch((err) => {
-        let errmsg;
-        switch(err.code) {
-          case "permission-denied":
-            errmsg = "Invalid Permission, Something went wrong (401)";
-            break;
-          default:
-            errmsg = err
-            break;
-        };
         addToast({
-          message: errmsg,
+          message: err,
           type: "error",
-          duration: 2000,
         } as ToastData);
     });
-
-    loading.messages = false;
-
-    if (!querySnapshot || querySnapshot.empty) {
-      addToast({
-        message: "No messages found",
-        type: "error",
-        duration: 2000,
-      } as ToastData)
-      return;
-    } 
     
-    querySnapshot.forEach((doc) => {
-      messages.value.push({docid: doc.id, ...doc.data()} as MessageDetails);
-    });
-
+    if (querySnapshot && !querySnapshot.empty) {
+      querySnapshot.forEach((doc) => {
+        messages.value.push({docid: doc.id, ...doc.data()} as MessageDetails);
+      });
+    }
+    
+    loading.messages = false;
 
   };
 

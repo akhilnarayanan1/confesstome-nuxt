@@ -3,8 +3,8 @@
     <NuxtPage />
     <Toast /> 
     <CompleteProfile @load-profile="loadProfile(user)" />
-    <div>-----------------------</div>
-    {{ getProfile() }}
+    <!-- <div>-----------------------</div>
+    {{ getProfile() }} -->
   </div>
 </template>
 
@@ -33,17 +33,8 @@
 
   const loadProfile = async (user: User) => {
     const querySnapshot = await getDoc(doc(db, "users", user.uid as string)).catch((err) => {
-        let errmsg;
-        switch(err.code) {
-          case "permission-denied":
-            errmsg = "Invalid Permission, Something went wrong (401)";
-            break;
-          default:
-            errmsg = err
-            break;
-        };
         addToast({
-            message: errmsg,
+            message: err,
             type: "error",
             duration: 2000,
         } as ToastData);

@@ -1,8 +1,8 @@
 <template>
   <div v-if="toasts?.length"  class="flex justify-center md:justify-end">
-    <div class="fixed bottom-0 stack">
+    <div class="fixed bottom-0 stack m-4">
       <transition-group name="list">
-        <div v-for="toast in reverseToast(toasts)" :key="toast.id" class="m-2">
+        <div v-for="toast in reverseToast(toasts)" :key="toast.id" >
           <div :class="{'alert shadow-lg text-white':true, 'alert-error': toast.type==='error',
           'alert-success': toast.type==='success', 'alert-warning': toast.type==='warning'}">
             <div><span>{{ toast.message }}</span></div>
