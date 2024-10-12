@@ -1,4 +1,4 @@
-import { type Timestamp } from "firebase-admin/firestore";
+import { type Timestamp } from "firebase/firestore";
 
 interface AlertData{
   message: string,
