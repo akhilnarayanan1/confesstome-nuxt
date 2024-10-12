@@ -23,6 +23,7 @@ interface RandomKeyValue {
 }
 
 interface FirestoreUserProfile{
+  id: string,
   createdOn: Timestamp | string, 
   name: string, 
   username: string

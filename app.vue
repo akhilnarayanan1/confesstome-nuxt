@@ -49,8 +49,8 @@
       return;
     };
 
-    const { createdOn, name, username } = querySnapshot.data() as FirestoreUserProfile;
-    setProfile({ createdOn, name, username });
+    const { id, createdOn, name, username } = querySnapshot.data() as FirestoreUserProfile;
+    setProfile({ id, createdOn, name, username });
 
   };
 </script>

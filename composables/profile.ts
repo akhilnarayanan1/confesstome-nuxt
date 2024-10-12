@@ -2,6 +2,7 @@ import type { FirestoreUserProfile } from "@/assets/js/types";
 
 export const profile = () => useState<FirestoreUserProfile>(
     "profile", () => ({
+        id: "",
         createdOn: "",
         name: "",
         username: ""
