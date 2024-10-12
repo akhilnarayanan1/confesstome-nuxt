@@ -1,13 +1,13 @@
 <template>
     <Navbar />
-    <div v-if="messagePending" class="flex justify-center m-4">
+    <div v-if="loading.page || messagePending" class="flex justify-center m-4">
         <div class="skeleton h-32 w-full"></div>
     </div>
     <div v-else class="flex justify-center m-4">
         <div class="card bg-base-300 text-base-content w-full">
             <div class="card-body">
                 <blockquote class="relative ps-4">
-                    <p v-if="messageData" class="text-xl font-semibold"><em>{{ messageData?.message }}</em></p>
+                    <p class="text-xl font-semibold"><em>{{ messageData?.message }}</em></p>
                     <div class="ms-4 mt-4">
                         <div class="font-light">{{ messageData?.from == currentUser?.uid ? 'you' : 'anonymous' }}</div>
                     </div>
@@ -32,7 +32,7 @@
                     <p><em>{{ reply.from === currentUser?.uid ? 'you' : getUser }}</em></p>
                     <time class="text-xs">{{ reply.createdOn.toDate().toLocaleString() }}</time>
                 </div>
-                <div class="chat-bubble bg-base-300 text-base-content">{{ reply.reply }}</div>
+                <div class="break-words chat-bubble bg-base-300 text-base-content">{{ reply.reply }}</div>
             </div>
         </div>
         <div ref="scrollHook"></div>
@@ -76,16 +76,6 @@
     const {data: userData, error: userError, pending: userPending } = useCollection<FirestoreUserProfile>(
         () => (messageData.value && currentUser.value)
         ? query(collection(db, "users"), where("__name__", "in", [messageData.value.from, messageData.value.to]))
-            .withConverter<FirestoreUserProfile, DocumentData>({
-                    toFirestore: firestoreDefaultConverter.toFirestore,
-                    fromFirestore: (snapshot, options) => {
-                        const data = firestoreDefaultConverter.fromFirestore(snapshot, options)
-                        // usually you can do data validation here
-                        if (!data) return {} as FirestoreUserProfile;
-                        data.docid = snapshot.id
-                        return data as FirestoreUserProfile;
-                    },
-                })
         : null, { once: true, ssrKey: 'userData' });
 
     const getUser = computed(() => {
@@ -93,7 +83,7 @@
             return "loading";
         }
         return (messageData.value?.from === currentUser.value?.uid) 
-        ?  _.first(_.reject(userData.value, ['docid', currentUser.value?.uid]))?.name : "anonymous"
+        ?  _.first(_.reject(userData.value, ['id', currentUser.value?.uid]))?.name : "anonymous"
     });
 
     const { data: repliesData, error: repliesError, pending: repliesPending, stop: repliesStop } = useCollection<ReplyDetails>( 

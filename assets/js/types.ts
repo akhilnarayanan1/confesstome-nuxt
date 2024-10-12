@@ -30,7 +30,7 @@ interface FirestoreUserProfile{
 };
 
 interface MessageDetails {
-  docid: string,
+  id: string,
   message: string,
   from: string,
   to: string,
@@ -41,7 +41,6 @@ interface MessageDetails {
 
 interface ReplyDetails {
   id: string
-  docid: string,
   cid: string,
   reply: string,
   from: string,

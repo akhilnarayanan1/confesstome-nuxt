@@ -1,17 +1,16 @@
 <template>
     <div>
         <Navbar />
-        <div v-if="loading.messages"><LoadingChats /></div>
+        <div v-if="loading.page || messagePending"><LoadingChats /></div>
         <div v-else>
           <section class="flex flex-col justify-center p-4">
             <div class="h-full">
               <div class="relative mx-auto shadow-lg rounded-lg">
                 <div class="py-3 px-5">
                   <h3 class="text-xs font-semibold uppercase text-gray-400 mb-1">Chats</h3>
-                  <div class="">
-                    <div v-for="message in messages">
+                    <div v-for="message in messageData">
                       <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2" @click="navigateTo({
-                        path: '/reply', query: {cid: message.docid},
+                        path: '/reply', query: {cid: message.id},
                       })">
                         <div class="flex items-center">
                           <div class= "rounded-full mr-2" :style="{'background-color': message.fakecolor, 'min-width': '32px', 'min-height': '32px' }"></div>
@@ -22,7 +21,6 @@
                         </div>
                       </button>
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -31,9 +29,9 @@
     </div>
 </template>
 <script setup lang="ts">
-  import { useIsCurrentUserLoaded } from "vuefire";
   import type { ToastData, MessageDetails } from "@/assets/js/types";
-  import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+  import { collection, query, where, orderBy } from "firebase/firestore";
+  import { useCollection } from 'vuefire';
   import _ from "lodash";
 
   const currentUser = useCurrentUser();
@@ -46,47 +44,19 @@
 
   // const groupedByFrom = computed(() => _.groupBy(messages.value, (message) => message));
 
-  onMounted(() => { 
-    if (!useIsCurrentUserLoaded().value) {
-      watch(currentUser, (newCurrentUser) => loadMessages());
-    } else {
-      loadMessages();
-    }
-  });
-
-  const loadMessages = async () => {
-    //Stop processing if user is blank
-    if (!currentUser.value) {
-        addToast({
-          message: "Unknown error, Please try again (401)",
-          type: "error",
-          duration: 2000,
-        } as ToastData);
-        return;
-      };
-    loading.messages = true;
-    const q = query(
-      collection(db, "messages"),
+  const { data: messageData, error: messageError, pending: messagePending } = useCollection<MessageDetails>(
+    () => currentUser.value 
+      ? query(collection(db, "messages"),
       where("to", "==", currentUser.value.uid as string),
-      orderBy("createdOn", "desc") // Order by "createdOn" in descending order
-    );
+      orderBy("createdOn", "desc")
+    ) : null, {ssrKey: 'messages', once: true});
 
-    const querySnapshot = await getDocs(q).catch((err) => {
-        addToast({
-          message: err,
-          type: "error",
-        } as ToastData);
-    });
-    
-    if (querySnapshot && !querySnapshot.empty) {
-      querySnapshot.forEach((doc) => {
-        messages.value.push({docid: doc.id, ...doc.data()} as MessageDetails);
-      });
-    }
-    
-    loading.messages = false;
 
-  };
-
+  watch(messageError, (newMessageError) => {
+    addToast({
+      message: newMessageError?.message,
+      type: "error",
+    } as ToastData);
+  })
   
 </script>

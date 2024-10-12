@@ -12,6 +12,7 @@ export const profile = () => useState<FirestoreUserProfile>(
 export const getProfile = () => computed(()=>profile()).value;
 
 export const setProfile = (data: FirestoreUserProfile) => {
+    profile().value.id = data.id;
     profile().value.createdOn = data.createdOn;
     profile().value.name = data.name;
     profile().value.username = data.username;

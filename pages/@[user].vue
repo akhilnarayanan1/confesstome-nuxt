@@ -1,6 +1,6 @@
 <template>
-  <div v-if="otherUser.loading"><CircleLoad /></div>
-  <div v-else-if="otherUser.found">
+  <div v-if="loading.page || pendingOtherUser"><CircleLoad /></div>
+  <div v-else-if="dataOtherUser.length > 0">
     <!-- {{ user }} -->
     <div class="flex items-center justify-center h-screen">
       <div class="card shadow max-w-sm m-4">
@@ -8,7 +8,7 @@
           <!-- <div class="text-4xl font-bold mb-4">What's there for me</div> -->
           <form id="formStartThread" @submit.prevent="startThread">
             
-            <div class="mb-4">Spill it out for {{ otherUser.name }}</div>
+            <div class="mb-4">Spill it out for {{ dataOtherUser.at(0)?.name }}</div>
 
             <textarea v-model="form.send_confession" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
             <InputLabel class="-mt-6" labelName="send_confession" />
@@ -26,14 +26,12 @@
     User Not Found
   </div>
 
-  <!-- <div>{{ $route.params.user }}</div> -->
 </template>
 
 <script setup lang="ts">
-  import type { ToastData } from "@/assets/js/types";
-  import { collection, query, where, getDocs, getDoc, serverTimestamp, addDoc } from "firebase/firestore";
+  import type { FirestoreUserProfile, ToastData } from "@/assets/js/types";
+  import { collection, query, where, serverTimestamp, addDoc } from "firebase/firestore";
   import { SendConfession } from "@/assets/js/forms";
-  import { useIsCurrentUserLoaded } from "vuefire";
   import { getFakeNameAndImage } from "@/assets/js/functions";
 
   const db = useFirestore()!;
@@ -47,7 +45,19 @@
 
   const form = reactive({ send_confession: ''});
 
-  const otherUser = reactive({ loading: true, found: false, name: "", username: "", uid: "" });
+  const {data: dataOtherUser, error: errorOtherUser, pending: pendingOtherUser} = useCollection<FirestoreUserProfile>(
+    () => (currentUser.value)
+    ? query(collection(db, "users"), where("username", "==", route.params.user))
+    : null
+  );
+
+  watch(errorOtherUser, (newErrorOtherUser) => {
+    addToast({
+        message: newErrorOtherUser?.message,
+        type: "error",
+        duration: 2000,
+    } as ToastData);
+  });
 
   const startThread = async () => {
 
@@ -67,7 +77,7 @@
 
     loading.sendMessage = true;
 
-    if (otherUser.uid === currentUser.value?.uid) {
+    if (dataOtherUser.value.at(0)?.id === currentUser.value?.uid) {
       addToast({
         message: "You can't send message to yourself.",
         type: "error",
@@ -80,7 +90,7 @@
     const {fakename, fakecolor} = getFakeNameAndImage(currentUser.value.uid);
 
     const reponse = await addDoc((collection(db, "messages")), {
-      to: otherUser.uid,
+      to: dataOtherUser.value.at(0)?.id,
       from: currentUser.value?.uid as string,
       message: form.send_confession,
       createdOn: serverTimestamp(),
@@ -104,38 +114,6 @@
 
     form.send_confession = "";
     loading.sendMessage = false;
-  };
-
-  onMounted(async ()=> {
-    if (!useIsCurrentUserLoaded().value) {
-      watch(() => currentUser.value, (newCurrentUser) => loadOtherAccount());
-    } else {
-      loadOtherAccount();
-    }
-  });
-
-  const loadOtherAccount = async () => {
-
-    const q = query(collection(db, "users"), where("username", "==", route.params.user));
-    const querySnapshot = await getDocs(q).catch((err) => {
-        addToast({
-            message: err,
-            type: "error",
-            duration: 2000,
-        } as ToastData);
-    });
-
-    otherUser.loading = false;
-
-    !querySnapshot || querySnapshot.empty ? otherUser.found = false : otherUser.found = true;
-
-    if (querySnapshot && !querySnapshot.empty) {
-      const id = querySnapshot.docs[0].id;
-      const { name, username } =  querySnapshot.docs[0].data();
-      otherUser.name = name;
-      otherUser.username = username;
-      otherUser.uid = id;
-    }
   };
   
 </script>
