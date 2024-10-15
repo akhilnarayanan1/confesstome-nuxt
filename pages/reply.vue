@@ -15,12 +15,15 @@
             </div>
         </div>
     </div>
-    <button @click="loadReplies" class="btn fixed top-0">Load Messages</button>
-
-    <div v-if="repliesPending" class="flex justify-center m-4">
+    
+    <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
         <div class="skeleton h-24 w-full"></div>
     </div>
     <div v-else class="mx-4 mb-24">
+        <div class="flex justify-center m-8">
+            <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn">Load Messages</button>
+            <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md"></span>
+        </div>
         <div v-for="reply in replies">
             <div :class="reply.to == currentUser?.uid ? 'chat chat-start' : 'chat chat-end'">
                 <div class="chat-image avatar">
@@ -71,6 +74,7 @@
     const loading = reactive({ page: true, send_reply: false });
     const replies = ref<ReplyDetails[]>([]);
     const loadedTill = ref<DocumentData>();
+    const loadMoreMessage = reactive({button: false, loading: false});
 
     watchEffect(() => loading.page = currentUser == undefined);
 
@@ -115,15 +119,24 @@
     }, {ssrKey: 'replies'});
 
     watch(repliesData, async (newRepliesData) => {
-        const newReplies = newRepliesData.filter((reply) => {
-            return !replies.value.find((r) => r.id === reply.id);
-        });
-        replies.value.push(...newReplies);
-        loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id))
-        setTimeout(() => scrollTo(scrollHook), 1);
+        if (newRepliesData.length > 0) {
+            const newReplies = newRepliesData.filter((reply) => {
+                return !replies.value.find((r) => r.id === reply.id);
+            });
+            replies.value.push(...newReplies);
+            loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id))
+            setTimeout(() => scrollTo(scrollHook), 1);
+            loadMoreMessage.loading = false
+            loadMoreMessage.button = true
+        } else {
+            loadMoreMessage.loading = false
+            loadMoreMessage.button = false
+        }
     }, { deep: true });
    
     const loadReplies = () => {
+        loadMoreMessage.loading = true
+        loadMoreMessage.button = false
         useCollection<ReplyDetails>( 
             () => {
             if (messageData.value && currentUser.value) {
@@ -145,12 +158,19 @@
             }
             return null;
         }, {ssrKey: 'replies'}).promise.value.then(async (docs) => {
-            _.forEach(docs, async(doc) => {
-                if (!_.find(replies.value, ['id', doc.id])) {
-                    replies.value.unshift(doc);
-                }
-            });
-            loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
+            if (docs.length > 0) {
+                _.forEach(docs, async(doc) => {
+                    if (!_.find(replies.value, ['id', doc.id])) {
+                        replies.value.unshift(doc);
+                    }
+                });
+                loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
+                loadMoreMessage.loading = false
+                loadMoreMessage.button = true
+            } else {
+                loadMoreMessage.loading = false
+                loadMoreMessage.button = false
+            }
         });
     };
 
