@@ -15,11 +15,13 @@
             </div>
         </div>
     </div>
+    <button @click="loadReplies" class="btn fixed top-0">Load Messages</button>
+
     <div v-if="repliesPending" class="flex justify-center m-4">
         <div class="skeleton h-24 w-full"></div>
     </div>
     <div v-else class="mx-4 mb-24">
-        <div v-for="reply in repliesData">
+        <div v-for="reply in replies">
             <div :class="reply.to == currentUser?.uid ? 'chat chat-start' : 'chat chat-end'">
                 <div class="chat-image avatar">
                     <div class= "rounded-full mr-2" :style="{
@@ -34,7 +36,7 @@
                 </div>
                 <div class="break-words chat-bubble bg-base-300 text-base-content">{{ reply.reply }}</div>
             </div>
-        </div>
+        </div>  
         <div ref="scrollHook"></div>
     </div>
     
@@ -55,9 +57,9 @@
     import { getFakeNameAndImage, getFromAndTo, scrollTo } from '@/assets/js/functions';
     import type { ToastData, MessageDetails, ReplyDetails, FirestoreUserProfile } from "@/assets/js/types";
     import { SendReply } from "@/assets/js/forms";
-    import { useCollection, useDocument, firestoreDefaultConverter } from 'vuefire';
-    import { collection, query, where, orderBy, doc, addDoc, serverTimestamp, or, and } from "firebase/firestore";
-    import type { DocumentData } from 'firebase/firestore'
+    import { useCollection, useDocument } from 'vuefire';
+    import { collection, query, where, orderBy, doc, addDoc, serverTimestamp, or, and, limit, getDoc, limitToLast, startAfter } from "firebase/firestore";
+    import type { DocumentData} from "firebase/firestore";
     import _ from "lodash";
 
     const currentUser = useCurrentUser();
@@ -67,6 +69,8 @@
     const scrollHook = ref<HTMLElement | null>(null);
     const form = reactive({ send_reply: '' });
     const loading = reactive({ page: true, send_reply: false });
+    const replies = ref<ReplyDetails[]>([]);
+    const loadedTill = ref<DocumentData>();
 
     watchEffect(() => loading.page = currentUser == undefined);
 
@@ -99,27 +103,56 @@
                             where("to", "==", currentUser.value.uid),
                         ),
                     ),
-                    orderBy("createdOn", "asc") // Order by "createdOn" in ascending order
-                ).withConverter<ReplyDetails, DocumentData>({
-                    toFirestore: firestoreDefaultConverter.toFirestore,
-                    fromFirestore: (snapshot, options) => {
-                        const data = firestoreDefaultConverter.fromFirestore(snapshot, options)
-                        // usually you can do data validation here
-                        if (!data) return {} as ReplyDetails;
-                        data.metadata = snapshot.metadata
-                        return data as ReplyDetails;
-                    },
-                });
+                    orderBy("createdOn", "asc"), 
+                    limitToLast(3)
+                )
             } else {
-                addToast({
-                    message: "Invalid user",
-                    type: "error"
-                });
+                addToast({ message: "Invalid user", type: "error" } as ToastData);
                 return null;
             }
         }
         return null;
     }, {ssrKey: 'replies'});
+
+    watch(repliesData, async (newRepliesData) => {
+        const newReplies = newRepliesData.filter((reply) => {
+            return !replies.value.find((r) => r.id === reply.id);
+        });
+        replies.value.push(...newReplies);
+        loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id))
+        setTimeout(() => scrollTo(scrollHook), 1);
+    }, { deep: true });
+   
+    const loadReplies = () => {
+        useCollection<ReplyDetails>( 
+            () => {
+            if (messageData.value && currentUser.value) {
+                if ((messageData.value.from == currentUser.value.uid) || (messageData.value.to == currentUser.value.uid) || (replies.value.length > 0)) {
+                    return query(
+                        collection(db, "replies"),
+                        and(
+                            where("cid", "==", route.query.cid as string),
+                            or(where("from", "==", currentUser.value?.uid), where("to", "==", currentUser.value?.uid)),
+                        ),
+                        orderBy("createdOn", "desc"),
+                        startAfter(loadedTill.value),
+                        limit(3)
+                    );
+                } else {
+                    addToast({ message: "Invalid user", type: "error" } as ToastData);
+                    return null;
+                }
+            }
+            return null;
+        }, {ssrKey: 'replies'}).promise.value.then(async (docs) => {
+            _.forEach(docs, async(doc) => {
+                if (!_.find(replies.value, ['id', doc.id])) {
+                    replies.value.unshift(doc);
+                }
+            });
+            loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
+        });
+    };
 
     const sendReply = async () => {
         //Stop processing if user is blank
@@ -184,11 +217,7 @@
 
         loading.send_reply = false;
 
-    };
-    
-    watch(repliesData, (newPending, oldPending) => {
-        setTimeout(()=>scrollTo(scrollHook),1);
-    }, { deep: true });
+    };  
 
     onBeforeRouteLeave(()=>{
         repliesStop()

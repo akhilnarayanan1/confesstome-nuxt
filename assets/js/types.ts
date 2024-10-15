@@ -48,10 +48,6 @@ interface ReplyDetails {
   createdOn: Timestamp,
   fakename: string,
   fakecolor: string,
-  metadata: {
-    hasPendingWrites: boolean,
-    fromCache: boolean,
-  }
 };
 
 export type {
