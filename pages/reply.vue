@@ -79,7 +79,9 @@
     watchEffect(() => loading.page = currentUser == undefined);
 
     const { data: messageData, error: messageError, pending: messagePending } = useDocument<MessageDetails>(
-        () => currentUser.value ? doc(db, "messages", route.query.cid as string) : null, { once: true });
+        () => (route.query.cid && currentUser.value) 
+        ? doc(db, "messages", route.query.cid as string) 
+        : null, { once: true });
     
     const {data: userData, error: userError, pending: userPending } = useCollection<FirestoreUserProfile>(
         () => (messageData.value && currentUser.value)
@@ -126,12 +128,11 @@
             replies.value.push(...newReplies);
             loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id))
             setTimeout(() => scrollTo(scrollHook), 1);
-            loadMoreMessage.loading = false
-            loadMoreMessage.button = true
+            loadMoreMessage.button = true;
         } else {
-            loadMoreMessage.loading = false
-            loadMoreMessage.button = false
+            loadMoreMessage.button = false;
         }
+        loadMoreMessage.loading = false;
     }, { deep: true });
    
     const loadReplies = () => {
@@ -157,20 +158,18 @@
                 }
             }
             return null;
-        }, {ssrKey: 'replies'}).promise.value.then(async (docs) => {
-            if (docs.length > 0) {
-                _.forEach(docs, async(doc) => {
-                    if (!_.find(replies.value, ['id', doc.id])) {
-                        replies.value.unshift(doc);
-                    }
+        }, {ssrKey: 'replies'}).promise.value.then(async (newRepliesData) => {
+            if (newRepliesData.length > 0) {
+                const newReplies = newRepliesData.filter((reply) => {
+                    return !replies.value.find((r) => r.id === reply.id);
                 });
+                replies.value.unshift(...newReplies.reverse());
                 loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
-                loadMoreMessage.loading = false
-                loadMoreMessage.button = true
+                loadMoreMessage.button = true;
             } else {
-                loadMoreMessage.loading = false
-                loadMoreMessage.button = false
+                loadMoreMessage.button = false;
             }
+            loadMoreMessage.loading = false;
         });
     };
 
@@ -228,11 +227,12 @@
         });
 
         if (response) {
-            addToast({
+            addFieldAlert({
                 message: "Reply sent successfully!",
                 type: "success",
-                duration: 3000,
-            });
+                fieldid: "send_reply",
+                source: "server"
+            })
         }
 
         loading.send_reply = false;
