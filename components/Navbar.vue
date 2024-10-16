@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar bg-base-100">
+    <div class="navbar">
         <div class="flex-none">
             <button class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -9,11 +9,6 @@
             <a class="btn btn-ghost normal-case text-xl">ConfessTo.Me</a>
         </div>
         <div class="flex-none">
-            <label class="swap swap-rotate">
-                <input data-key="theme" data-toggle-theme="light,dark" data-act-class="ACTIVECLASS" type="checkbox" class="theme-controller" />                    
-                <span :class="{'fill-current material-symbols-outlined': true, 'swap-on': isDark, 'swap-off': !isDark}">dark_mode</span>
-                <span :class="{'fill-current material-symbols-outlined': true, 'swap-off': isDark, 'swap-on': !isDark}">light_mode</span>
-            </label>
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost">
                     <span class="material-symbols-outlined">more_vert</span>
@@ -48,7 +43,6 @@
 </template>
 
 <script setup lang="ts">
-    import { themeChange } from "theme-change";
 
     const auth = useFirebaseAuth()!;
     const user = useCurrentUser();
@@ -57,10 +51,6 @@
 
     const profile = getProfile();
 
-    onMounted(() => {
-        isDark.value = localStorage.getItem("theme") === "dark" ? true : false;
-        themeChange(false);
-    })
 
     const signOutUser = async () => {
         if (!user.value?.isAnonymous as boolean) {

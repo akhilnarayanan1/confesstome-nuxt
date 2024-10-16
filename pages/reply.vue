@@ -1,13 +1,13 @@
 <template>
     <Navbar />
     <div v-if="loading.page || messagePending" class="flex justify-center m-4">
-        <div class="skeleton h-32 w-full"></div>
+        <div class="skeleton bg-base-300 bg-opacity-30 h-32 w-full"></div>
     </div>
     <div v-else class="flex justify-center m-4">
-        <div class="card bg-base-300 text-base-content w-full">
+        <div class="card bg-base-300 bg-opacity-30  w-full">
             <div class="card-body">
                 <blockquote class="relative ps-4">
-                    <p class="text-xl font-semibold"><em>{{ messageData?.message }}</em></p>
+                    <p class="text-xl font-semibold truncate"><em>{{ messageData?.message }}</em></p>
                     <div class="ms-4 mt-4">
                         <div class="font-light">{{ messageData?.from == currentUser?.uid ? 'you' : 'anonymous' }}</div>
                     </div>
@@ -17,11 +17,11 @@
     </div>
     
     <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
-        <div class="skeleton h-24 w-full"></div>
+        <div class="skeleton bg-base-300 bg-opacity-30 h-24 w-full"></div>
     </div>
     <div v-else class="mx-4 mb-24">
         <div class="flex justify-center m-8">
-            <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn">Load Messages</button>
+            <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn  btn-sm">Load Messages</button>
             <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md"></span>
         </div>
         <div v-for="reply in replies">
@@ -37,13 +37,13 @@
                     <p><em>{{ reply.from === currentUser?.uid ? 'you' : getUser }}</em></p>
                     <time class="text-xs">{{ reply.createdOn.toDate().toLocaleString() }}</time>
                 </div>
-                <div class="break-words chat-bubble bg-base-300 text-base-content">{{ reply.reply }}</div>
+                <div class="break-words chat-bubble bg-base-300">{{ reply.reply }}</div>
             </div>
         </div>  
         <div ref="scrollHook"></div>
     </div>
     
-    <form id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 p-4 bg-base-100 shadow-lg">
+    <form id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 p-4 shadow-lg ">
         <div class="input input-bordered flex items-center gap-2 w-full">
             <input v-model="form.send_reply" type="text" class="grow w-full p-2" placeholder="Type your message here..." />
             <button type="submit" class="btn btn-sm m-2">

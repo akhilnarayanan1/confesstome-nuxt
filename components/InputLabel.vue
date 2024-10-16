@@ -2,11 +2,11 @@
   <label class="label">
     <div v-if="thisField">
       <span :class="thisField.type==='error'?
-        'label-text-alt text-red-500':
+        'label-text-alt text-error':
       thisField.type==='success'?
-        'label-text-alt text-green-500':
+        'label-text-alt text-success':
       thisField.type==='warning'?
-        'label-text-alt text-yellow-500':
+        'label-text-alt text-warning':
         'label-text-alt'
       ">
         {{ thisField.message }}

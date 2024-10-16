@@ -1,10 +1,10 @@
 <template>
   <div v-if="loading.page"><CircleLoad /></div>
   <div v-else class="flex items-center justify-center h-screen">
-    <div class="card shadow max-w-sm m-4">
+    <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
       <div class="card-body">
         <div class="text-4xl font-bold mb-4">Signup</div>
-        <div class="mb-4">Already have an account? <NuxtLink to="/login" class="text-primary font-bold" replace>Login here</NuxtLink>, and stay ahead!</div>
+        <div class="mb-4">Already have an account? <NuxtLink to="/login" class="text-apptheme font-bold" replace>Login here</NuxtLink>, and stay ahead!</div>
 
         <form id="formCreateAccount" @submit.prevent="createAccount">
           
@@ -42,13 +42,13 @@
               </div>   
           </div> -->
 
-          <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
             <span v-if="loading.signup" class="loading loading-spinner loading-sm"></span>
             <span>CREATE ACCOUNT</span>
           </button>
         </form>
         
-          <!-- <button class="btn btn-block bg-error hover:bg-error text-white">
+          <!-- <button class="btn btn-block bg-error hover:bg-error">
             <span v-if="loading.signup" class="loading loading-spinner loading-sm"></span>
             <NuxtImg format="auto" src="/icons8-google.svg" alt="Google Logo" class="w-6 h-6 inline-block"/>
             <span>GOOGLE SIGNUP</span>

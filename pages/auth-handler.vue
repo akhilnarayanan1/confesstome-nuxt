@@ -43,7 +43,7 @@
                 </div>  
                 <InputLabel labelName="reset_confirm_password"/>
               </div> 
-              <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+              <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
                 <span v-if="loading.reset" class="loading loading-spinner loading-sm"></span>
                 <span>CHANGE PASSWORD</span>
               </button>

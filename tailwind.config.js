@@ -8,10 +8,16 @@ module.exports = {
     "./nuxt.config.{js,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        mycolor1: '#2C5364', 
+        mycolor2: '#0F2027',
+        apptheme: '#3C7087',
+      },
+    },
   },
   plugins: [require('@tailwindcss/typography'), require("daisyui")],
   daisyui: {
-    themes: ["light", "dark"],
+    themes: ["dark"],
   },
 }

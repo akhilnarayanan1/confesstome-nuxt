@@ -11,7 +11,7 @@
                         <div class="skeleton w-9 h-9 rounded-full shrink-0"></div>
                         <div class="flex flex-col gap-4">
                             <div class="skeleton h-3 w-14"></div>
-                            <div class="skeleton h-3 w-52"> </div>
+                            <div class="skeleton h-3 w-52"></div>
                         </div>
                     </div>
                     </div>

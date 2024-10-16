@@ -1,11 +1,11 @@
 <template>
   <div class="login flex items-center justify-center h-screen">
 
-    <div class="card shadow max-w-sm m-4">
+    <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
       <div class="card-body">
           
         <div class="text-4xl font-bold mb-4">Login</div>
-        <div class="mb-4">Don't have an account?  <NuxtLink to="/signup" class="text-primary font-bold" replace>Create your account</NuxtLink>, it takes less than a minute</div>
+        <div class="mb-4">Don't have an account?  <NuxtLink to="/signup" class="font-bold text-apptheme" replace>Create your account</NuxtLink>, it takes less than a minute</div>
 
         <form id="formLoginAccount" @submit.prevent="loginAccount">
           <div class="form-control">
@@ -28,9 +28,9 @@
             <InputLabel labelName="login_password"/>
           </div>
 
-        <NuxtLink to="/forgot" class="text-primary font-bold float-right mb-4">Forgot Password?</NuxtLink>
+        <NuxtLink to="/forgot" class="text-apptheme font-bold float-right mb-4">Forgot Password?</NuxtLink>
     
-          <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
             <span v-if="loading.login" class="loading loading-spinner loading-sm"></span>
             <span>LOGIN</span>
           </button>

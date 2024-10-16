@@ -1,8 +1,10 @@
 <template>
   <div>
-    <NuxtPage />
-    <Toast /> 
-    <CompleteProfile @load-profile="loadProfile(user)" />
+    <NuxtLayout>
+      <NuxtPage />
+      <Toast /> 
+      <CompleteProfile @load-profile="loadProfile(user)" />
+    </NuxtLayout>
     <!-- <div>-----------------------</div>
     {{ getProfile() }} -->
   </div>

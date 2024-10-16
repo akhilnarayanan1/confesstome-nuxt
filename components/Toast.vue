@@ -3,7 +3,7 @@
     <div class="fixed bottom-0 stack m-4">
       <transition-group name="list">
         <div v-for="toast in reverseToast(toasts)" :key="toast.id" >
-          <div :class="{'alert shadow-lg text-white':true, 'alert-error': toast.type==='error',
+          <div :class="{'alert shadow-lg':true, 'alert-error': toast.type==='error',
           'alert-success': toast.type==='success', 'alert-warning': toast.type==='warning'}">
             <div><span>{{ toast.message }}</span></div>
             <div v-if="!toast.duration" class="flex-none">

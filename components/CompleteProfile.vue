@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="modal-action">
-                    <button type="submit" class="btn btn-block glass bg-primary hover:bg-primary text-white">
+                    <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
                         <span v-if="loading.continue" class="loading loading-spinner loading-sm"></span>
                         <span>CONTINUE</span>
                     </button>

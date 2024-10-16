@@ -6,10 +6,10 @@
           <section class="flex flex-col justify-center p-4">
             <div class="h-full">
               <div class="relative mx-auto shadow-lg rounded-lg">
-                <div class="py-3 px-5">
-                  <h3 class="text-xs font-semibold uppercase text-gray-400 mb-1">Chats</h3>
+                <div class="py-3 px-5 bg-base-300 bg-opacity-30 rounded-box">
+                  <h3 class="text-xs font-semibold uppercase mb-1">Chats</h3>
                     <div v-for="message in messageData">
-                      <button class="w-full text-left hover:bg-slate-500 hover:rounded-lg p-2" @click="navigateTo({
+                      <button class="w-full text-left hover:bg-base-100 hover:bg-opacity-40 hover:rounded-lg p-2" @click="navigateTo({
                         path: '/reply', query: {cid: message.id},
                       })">
                         <div class="flex items-center">
@@ -32,13 +32,11 @@
   import type { ToastData, MessageDetails } from "@/assets/js/types";
   import { collection, query, where, orderBy } from "firebase/firestore";
   import { useCollection } from 'vuefire';
-  import _ from "lodash";
 
   const currentUser = useCurrentUser();
   const db = useFirestore();
 
   const loading = reactive({ page: true, messages: true })
-  const messages = ref([] as MessageDetails[])
 
   watchEffect(() => loading.page = currentUser == undefined);
 
