@@ -6,7 +6,7 @@
           <section class="flex flex-col justify-center p-4">
             <div class="h-full">
               <div class="relative mx-auto shadow-lg rounded-lg">
-                <div class="py-3 px-5 bg-base-300 bg-opacity-30 rounded-box">
+                <div class="py-3 px-5 bg-base-300 bg-opacity-30 rounded-box text-white">
                   <h3 class="text-xs font-semibold uppercase mb-1">Chats</h3>
                     <div v-for="message in messageData">
                       <button class="w-full text-left hover:bg-base-100 hover:bg-opacity-40 hover:rounded-lg p-2" @click="navigateTo({
@@ -35,19 +35,36 @@
 
   const currentUser = useCurrentUser();
   const db = useFirestore();
+  const route = useRoute();
 
   const loading = reactive({ page: true, messages: true })
 
   watchEffect(() => loading.page = currentUser == undefined);
 
-  // const groupedByFrom = computed(() => _.groupBy(messages.value, (message) => message));
+  const mapper = (queryStr: "received" | "sent"): "from" | "to" => {
+    if (queryStr === 'received') return "from";
+    if (queryStr === 'sent') return "to";
+    // Optionally, throw or handle unexpected input
+    throw new Error("Invalid queryStr");
+  }
+
+  const sourceType = computed(() => {
+    const sourceQuery = Array.isArray(route.query.source) ? route.query.source[0] : route.query.source;
+    if (sourceQuery === "received") return "from";
+    if (sourceQuery === "sent") return "to";
+    navigateTo({ path: '/messages', query: { source: 'sent' } });
+    return null;
+  });
 
   const { data: messageData, error: messageError, pending: messagePending } = useCollection<MessageDetails>(
-    () => currentUser.value 
-      ? query(collection(db, "messages"),
-      where("to", "==", currentUser.value.uid as string),
-      orderBy("createdOn", "desc")
-    ) : null, {ssrKey: 'messages', once: true});
+    () => {
+      if (!currentUser.value) return null;
+      return query(
+        collection(db, "messages"),
+        where(sourceType.value || "from", "==", currentUser.value.uid as string),
+        orderBy("createdOn", "desc")
+      );
+    }, {ssrKey: `messages-${sourceType.value || "from"}`});
 
 
   watch(messageError, (newMessageError) => {

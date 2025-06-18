@@ -6,13 +6,13 @@
       <div class="card shadow max-w-sm m-4">
         <div class="card-body">
           <!-- <div class="text-4xl font-bold mb-4">What's there for me</div> -->
-          <form id="formStartThread" @submit.prevent="startThread">
+          <form id="formStartThread" @submit.prevent="startThread" class="text-white">
             
             <div class="mb-4">Spill it out for {{ dataOtherUser.at(0)?.name }}</div>
 
             <textarea v-model="form.send_confession" placeholder="Bio" class="mb-4 textarea textarea-bordered textarea-lg w-full max-w-xs" ></textarea>
             <InputLabel class="-mt-6" labelName="send_confession" />
-            <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
+            <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
               <span v-if="loading.sendMessage" class="loading loading-spinner loading-sm"></span>
               <span>Send Confession</span>
             </button>

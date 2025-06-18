@@ -1,5 +1,5 @@
 <template>
-  <div class="login flex items-center justify-center h-screen">
+  <div class="login flex items-center justify-center h-screen text-white">
 
     <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
       <div class="card-body">
@@ -30,7 +30,7 @@
 
         <NuxtLink to="/forgot" class="text-apptheme font-bold float-right mb-4">Forgot Password?</NuxtLink>
     
-          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
+          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
             <span v-if="loading.login" class="loading loading-spinner loading-sm"></span>
             <span>LOGIN</span>
           </button>

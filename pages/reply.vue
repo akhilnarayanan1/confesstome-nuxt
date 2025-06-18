@@ -19,8 +19,8 @@
     <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
         <div class="skeleton bg-base-300 bg-opacity-30 h-24 w-full"></div>
     </div>
-    <div v-else class="mx-4 mb-24">
-        <div class="flex justify-center m-8">
+    <div v-else class="mx-4">
+        <div class="flex justify-center">
             <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn  btn-sm">Load Messages</button>
             <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md"></span>
         </div>
@@ -37,13 +37,14 @@
                     <p><em>{{ reply.from === currentUser?.uid ? 'you' : getUser }}</em></p>
                     <time class="text-xs">{{ reply.createdOn.toDate().toLocaleString() }}</time>
                 </div>
-                <div class="break-words chat-bubble bg-base-300">{{ reply.reply }}</div>
+                <div class="break-words chat-bubble bg-base-300 text-white">{{ reply.reply }}</div>
             </div>
         </div>  
         <div ref="scrollHook"></div>
+        <div class="h-28"></div>
     </div>
     
-    <form id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 p-4 shadow-lg ">
+    <form id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 p-4 bg-base-300 bg-opacity-70 rounded-md shadow-lg ">
         <div class="input input-bordered flex items-center gap-2 w-full">
             <input v-model="form.send_reply" type="text" class="grow w-full p-2" placeholder="Type your message here..." />
             <button type="submit" class="btn btn-sm m-2">

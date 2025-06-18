@@ -6,7 +6,7 @@
             </button>
         </div>
         <div class="flex-1">
-            <a class="btn btn-ghost normal-case text-xl">ConfessTo.Me</a>
+            <a class="btn btn-ghost normal-case text-xl text-white">ConfessTo.Me</a>
         </div>
         <div class="flex-none">
             <div class="dropdown dropdown-end">

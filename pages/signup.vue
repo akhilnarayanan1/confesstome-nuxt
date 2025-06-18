@@ -1,6 +1,6 @@
 <template>
   <div v-if="loading.page"><CircleLoad /></div>
-  <div v-else class="flex items-center justify-center h-screen">
+  <div v-else class="flex items-center justify-center h-screen text-white">
     <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
       <div class="card-body">
         <div class="text-4xl font-bold mb-4">Signup</div>
@@ -42,7 +42,7 @@
               </div>   
           </div> -->
 
-          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
+          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
             <span v-if="loading.signup" class="loading loading-spinner loading-sm"></span>
             <span>CREATE ACCOUNT</span>
           </button>

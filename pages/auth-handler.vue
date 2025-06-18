@@ -7,13 +7,13 @@
       </div>
       <div v-else-if="invalidOrExpired">
         <div class="card shadow max-w-sm m-4">
-          <div class="card-body">
+          <div class="card-body text-white">
             {{ message }}
           </div>
         </div>
       </div>
       <div v-else-if="mode==='verifyEmail' && !invalidOrExpired">
-        <div class="card shadow max-w-sm m-4">
+        <div class="card shadow max-w-sm m-4 text-white">
           <div class="card-body">
             Email verified successfully!
           </div>
@@ -21,7 +21,7 @@
       </div>
       <div v-else-if="mode==='resetPassword' && !invalidOrExpired">
         <div class="card shadow max-w-sm m-4">
-          <div class="card-body">
+          <div class="card-body text-white">
             <div class="text-4xl font-bold mb-4">Reset Password</div>
             <div class="my-4">Hi {{ maskedEmail }}, please enter your new password</div>
             <form id="formResetPassword" @submit.prevent="resetPassword">
@@ -43,7 +43,7 @@
                 </div>  
                 <InputLabel labelName="reset_confirm_password"/>
               </div> 
-              <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
+              <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
                 <span v-if="loading.reset" class="loading loading-spinner loading-sm"></span>
                 <span>CHANGE PASSWORD</span>
               </button>

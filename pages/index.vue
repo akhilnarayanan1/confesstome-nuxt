@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-white">
       <div class="font-bold pointer-events-none text-center text-3xl md:text-4xl lg:text-5xl">
         Get anonymous messages and honest feedback about yourself.
       </div>

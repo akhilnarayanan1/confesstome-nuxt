@@ -1,5 +1,5 @@
 <template>
-  <div class="forgot flex items-center justify-center h-screen">
+  <div class="forgot flex items-center justify-center h-screen text-white">
     <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
       <div class="card-body">
           
@@ -16,7 +16,7 @@
             </div>
             <InputLabel labelName="forgot_email"/>
           </div>
-          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
+          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
             <span v-if="loading.forgot" class="loading loading-spinner loading-sm"></span>
             <span>FORGOT PASSWORD</span>
           </button>
