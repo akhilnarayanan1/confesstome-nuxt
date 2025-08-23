@@ -24,7 +24,7 @@
             <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn  btn-sm">Load Messages</button>
             <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md"></span>
         </div>
-        <div v-for="reply in replies">
+        <div v-for="reply in replies" :key="reply.id">
             <div :class="reply.to == currentUser?.uid ? 'chat chat-start' : 'chat chat-end'">
                 <div class="chat-image avatar">
                     <div class= "rounded-full mr-2" :style="{
@@ -122,14 +122,18 @@
     }, {ssrKey: 'replies'});
 
     watch(repliesData, async (newRepliesData) => {
-        if (newRepliesData.length > 0) {
+        if (newRepliesData && newRepliesData.length > 0) {
             const newReplies = newRepliesData.filter((reply) => {
                 return !replies.value.find((r) => r.id === reply.id);
             });
-            replies.value.push(...newReplies);
-            loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id))
-            setTimeout(() => scrollTo(scrollHook), 1);
-            loadMoreMessage.button = true;
+            if (newReplies.length > 0) {
+                replies.value.push(...newReplies);
+                if (replies.value.length > 0 && replies.value[0]) {
+                    loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
+                }
+                setTimeout(() => scrollTo(scrollHook), 1);
+            }
+            loadMoreMessage.button = newRepliesData.length >= 3;
         } else {
             loadMoreMessage.button = false;
         }
@@ -160,13 +164,17 @@
             }
             return null;
         }, {ssrKey: 'replies'}).promise.value.then(async (newRepliesData) => {
-            if (newRepliesData.length > 0) {
+            if (newRepliesData && newRepliesData.length > 0) {
                 const newReplies = newRepliesData.filter((reply) => {
                     return !replies.value.find((r) => r.id === reply.id);
                 });
-                replies.value.unshift(...newReplies.reverse());
-                loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
-                loadMoreMessage.button = true;
+                if (newReplies.length > 0) {
+                    replies.value.unshift(...newReplies.reverse());
+                    if (replies.value.length > 0 && replies.value[0]) {
+                        loadedTill.value = await getDoc(doc(db, "replies", replies.value[0].id));
+                    }
+                }
+                loadMoreMessage.button = newRepliesData.length >= 3;
             } else {
                 loadMoreMessage.button = false;
             }

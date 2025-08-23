@@ -24,7 +24,7 @@
         <div class="mx-4 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div class="stats bg-opacity-30 shadow text-white">
                 <div class="stat" @click="navigateTo({ path: '/messages', query: { source: 'sent' } })">
-                    <div class="stat-title">Total Messages Received</div>
+                    <div class="stat-title">Total Messages Sent</div>
                     <div class="stat-value">89,400</div>
                     <div class="stat-desc">21% more than last month</div>
                 </div>
@@ -32,7 +32,7 @@
 
             <div class="stats bg-opacity-30 shadow text-white">
                 <div class="stat" @click="navigateTo({ path: '/messages', query: { source: 'received' } })">
-                    <div class="stat-title">Total Messages Sent</div>
+                    <div class="stat-title">Total Messages Received</div>
                     <div class="stat-value">89,400</div>
                     <div class="stat-desc">21% more than last month</div>
                 </div>

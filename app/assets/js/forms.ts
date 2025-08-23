@@ -1,5 +1,7 @@
 import { type AlertData, type RandomKeyValue} from "@/assets/js/types";
 import _ from "lodash";
+import { watchAlert } from "@/composables/alert";
+import { addFieldAlert, getFieldAlerts } from "@/composables/fieldAlerts";
 
 interface TSignupForm {
   signup_email: string;
@@ -66,7 +68,7 @@ class SignupForm {
     return (_.findIndex(fieldAlert.value, {
         source: "ui", 
         type: "error",
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 
@@ -93,7 +95,7 @@ class LoginForm {
     };
     if (this.form.login_password.length <= 0) {
       addFieldAlert({
-        message: "Password is reqired",
+        message: "Password is required",
         type: "error",
         source: "ui",
         fieldid: "login_password",
@@ -106,7 +108,7 @@ class LoginForm {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error"
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 
@@ -136,7 +138,7 @@ class ForgotPasswordForm {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error",
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 
@@ -197,7 +199,7 @@ class ResetPasswordForm {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error",
-    }) > -1) ? false : true
+    }) === -1)
   };
 };
 
@@ -232,7 +234,7 @@ class CompleteProfileForm {
     // };
     if (this.form.update_username.length <= 0) {
       addFieldAlert({
-        message: "Username is reqired",
+        message: "Username is required",
         type: "error",
         source: "ui",
         fieldid: "update_username",
@@ -253,7 +255,7 @@ class CompleteProfileForm {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error"
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 
@@ -283,7 +285,7 @@ class SendConfession {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error"
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 
@@ -313,7 +315,7 @@ class SendReply {
     return (_.findIndex(fieldAlert.value, {
       source: "ui", 
       type: "error"
-    }) > -1) ? false : true;
+    }) === -1);
   };
 };
 

@@ -34,6 +34,7 @@ interface MessageDetails {
   message: string,
   from: string,
   to: string,
+  toName: string,
   createdOn: Timestamp,
   fakename: string,
   fakecolor: string,

@@ -93,6 +93,7 @@
       to: dataOtherUser.value.at(0)?.id,
       from: currentUser.value?.uid as string,
       message: form.send_confession,
+      toName: dataOtherUser.value.at(0)?.name,  // Store recipient's name
       createdOn: serverTimestamp(),
       fakename: fakename,
       fakecolor: fakecolor,

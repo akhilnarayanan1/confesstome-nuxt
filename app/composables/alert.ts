@@ -1,8 +1,9 @@
 import _ from "lodash";
 import { changedKeys } from "@/assets/js/functions";
+import { getFieldAlerts } from "@/composables/fieldAlerts";
 
 export const watchAlert = (params: {[key: string]: string}) => {
-    let fieldAlert = getFieldAlerts();
+    const fieldAlert = getFieldAlerts();
     watch(
         () => ({...params}),
         (newval, preval) => {
