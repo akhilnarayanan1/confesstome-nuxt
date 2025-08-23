@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -15,9 +15,5 @@ module.exports = {
         apptheme: '#3C7087',
       },
     },
-  },
-  plugins: [require('@tailwindcss/typography'), require("daisyui")],
-  daisyui: {
-    themes: ["dark"],
-  },
+  }
 }

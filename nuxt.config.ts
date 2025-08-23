@@ -1,17 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
-  modules: [
-    '@nuxt/devtools',
-    '@nuxtjs/tailwindcss',
-    '@nuxt/image',
-    'nuxt-vuefire',
-  ],
+  modules: ['nuxt-vuefire'],
 
   css: ["@/assets/css/main.css"],
-
-  // hiding config until we setup DB security 🔒
+  vite: {
+    plugins: [tailwindcss()],
+  },
   vuefire: {
     auth: {
       enabled: true
@@ -25,13 +21,6 @@ export default defineNuxtConfig({
       appId: process.env.FIREBASE_APP_ID,
       measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
-  },
-
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    }
   },
 
   compatibilityDate: '2025-06-18',
