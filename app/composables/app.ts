@@ -1,4 +1,4 @@
-export const useAppConfig = () => {
+export const useAppMetaConfig = () => {
   const config = useRuntimeConfig();
   
   const baseUrl = config.public.baseUrl;

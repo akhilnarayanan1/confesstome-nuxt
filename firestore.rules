@@ -12,12 +12,14 @@ service cloud.firestore {
     
     match /messages/{messageId} {
       allow read: if isSignedIn() && isEitherSenderOrReceiverRead();
-      allow create: if isSignedIn() && isSender() && !isSenderReciverSame();
+      allow create: if isSignedIn() && isSender() && !isSenderReciverSame() && isValidMessageContent();
+      allow update, delete: if false; // Explicitly deny updates and deletes
     }
     
     match /replies/{replyId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
+      allow read: if isSignedIn() && isEitherSenderOrReceiverReply();
+      allow create: if isSignedIn() && isValidReplyCreation();
+      allow update, delete: if false; // Explicitly deny updates and deletes
     }
     
     // Functions //
@@ -43,6 +45,58 @@ service cloud.firestore {
     
     function isSignedIn() {
     	return request.auth != null;
+    }
+    
+    // Reply access control functions
+    function isEitherSenderOrReceiverReply() {
+    	return (resource.data.to == request.auth.uid) || (resource.data.from == request.auth.uid);
+    }
+    
+    function isValidReplyCreation() {
+    	return isValidReplySender() && 
+           isValidReplyToMessage(request.resource.data.cid) && 
+           isValidReplyContent();
+    }
+    
+    function isValidReplySender() {
+    	return request.resource.data.from == request.auth.uid;
+    }
+    
+    function isValidReplyToMessage(messageId) {
+    	let messageDoc = get(/databases/$(database)/documents/messages/$(messageId));
+    	return (messageDoc.data.from == request.auth.uid) || (messageDoc.data.to == request.auth.uid);
+    }
+    
+    // Content validation functions
+    function isValidMessageContent() {
+    	return request.resource.data.message is string &&
+           request.resource.data.message.size() > 0 && 
+           request.resource.data.message.size() <= 1000 &&
+           hasRequiredMessageFields();
+    }
+    
+    function isValidReplyContent() {
+    	return request.resource.data.reply is string &&
+           request.resource.data.reply.size() > 0 && 
+           request.resource.data.reply.size() <= 1000 &&
+           hasRequiredReplyFields();
+    }
+    
+    function hasRequiredMessageFields() {
+    	return request.resource.data.keys().hasAll(['message', 'from', 'to', 'createdOn', 'fakename', 'fakecolor']) &&
+           request.resource.data.from is string &&
+           request.resource.data.to is string &&
+           request.resource.data.fakename is string &&
+           request.resource.data.fakecolor is string;
+    }
+    
+    function hasRequiredReplyFields() {
+    	return request.resource.data.keys().hasAll(['reply', 'cid', 'from', 'to', 'createdOn', 'fakename', 'fakecolor']) &&
+           request.resource.data.cid is string &&
+           request.resource.data.from is string &&
+           request.resource.data.to is string &&
+           request.resource.data.fakename is string &&
+           request.resource.data.fakecolor is string;
     }
     
   }

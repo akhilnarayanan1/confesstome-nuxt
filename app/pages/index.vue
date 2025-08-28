@@ -128,5 +128,5 @@
 </template>
 
 <script setup lang="ts">
-  const appConfig = useAppConfig();
+  const appConfig = useAppMetaConfig();
 </script>

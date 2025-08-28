@@ -75,7 +75,7 @@
     const showLogoutModal = ref(false);
 
     const profile = getProfile();
-    const appConfig = useAppConfig();
+    const appConfig = useAppMetaConfig();
 
 
     const signOutUser = async () => {

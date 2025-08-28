@@ -89,5 +89,5 @@
 
 <script setup lang="ts">
     const profile = getProfile();
-    const appConfig = useAppConfig();
+    const appConfig = useAppMetaConfig();
 </script>
