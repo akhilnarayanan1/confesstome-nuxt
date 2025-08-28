@@ -1,12 +1,5 @@
 <template>
     <div class="navbar backdrop-blur-lg sticky top-0 z-40">
-        <div class="flex-none">
-            <button class="btn btn-square btn-ghost text-white hover:bg-white/20">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
         <div class="flex-1">
             <NuxtLink to="/" class="btn btn-ghost text-xl text-white hover:bg-white/20 font-black">
                 🎭 ConfessTo.Me
@@ -19,14 +12,14 @@
                 </div>
                 
                 <!-- Loading Menu -->
-                <ul v-if="!profile.username" tabindex="0" class="menu dropdown-content p-4 shadow-2xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl w-52 mt-4">
+                <ul v-if="!profile.username" tabindex="0" class="menu dropdown-content p-4 bg-black/60 backdrop-blur-lg border border-white/20 rounded-2xl w-52 mt-4">
                     <div v-for="(_, index) in Array.from({length: 3})" :key="index" class="mb-2">
                         <div class="h-8 bg-white/20 rounded-xl animate-pulse"></div>
                     </div>
                 </ul>
                 
                 <!-- Loaded Menu -->
-                <ul v-else tabindex="0" class="menu dropdown-content p-2 shadow-2xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl w-52 mt-4 text-white">
+                <ul v-else tabindex="0" class="menu dropdown-content p-2 shadow-2xl bg-black/60 backdrop-blur-sm border border-white/20 rounded-2xl w-52 mt-4 text-white">
                     <li>
                         <a class="rounded-xl hover:bg-white/20 transition-colors font-medium">
                             <span class="material-symbols-outlined text-yellow-300">edit</span>
