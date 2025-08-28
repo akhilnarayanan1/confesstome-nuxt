@@ -1,14 +1,17 @@
 <template>
   <label class="label">
-    <div v-if="thisField">
-      <span :class="thisField.type==='error'?
-        'label-text-alt text-error':
-      thisField.type==='success'?
-        'label-text-alt text-success':
-      thisField.type==='warning'?
-        'label-text-alt text-warning':
-        'label-text-alt'
-      ">
+    <div v-if="thisField" class="flex items-center gap-2 mt-2">
+      <span :class="{
+        'text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1': true,
+        'bg-pink-500/20 text-pink-300 border border-pink-300/30': thisField.type === 'error',
+        'bg-yellow-500/20 text-yellow-300 border border-yellow-300/30': thisField.type === 'success', 
+        'bg-orange-500/20 text-orange-300 border border-orange-300/30': thisField.type === 'warning',
+        'bg-white/10 text-white/70 border border-white/20': !thisField.type || thisField.type === 'info'
+      }">
+        <span v-if="thisField.type === 'error'">💥</span>
+        <span v-else-if="thisField.type === 'success'">✨</span>
+        <span v-else-if="thisField.type === 'warning'">⚠️</span>
+        <span v-else>ℹ️</span>
         {{ thisField.message }}
       </span>
     </div>

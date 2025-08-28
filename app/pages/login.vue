@@ -1,44 +1,44 @@
 <template>
-  <div class="login flex items-center justify-center h-screen text-white">
+  <div class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
+    </div>
 
-    <div class="card shadow max-w-sm m-4 bg-base-300 bg-opacity-30">
-      <div class="card-body">
+    <div class="flex items-center justify-center min-h-screen relative z-10">
+      <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-sm w-full m-4">
           
-        <div class="text-4xl font-bold mb-4">Login</div>
-        <div class="mb-4">Don't have an account?  <NuxtLink to="/signup" class="font-bold text-apptheme" replace>Create your account</NuxtLink>, it takes less than a minute</div>
+        <div class="text-4xl font-black mb-6 text-center">🎭 Login</div>
+        <div class="mb-6 text-center text-white/90">Don't have an account?  <NuxtLink to="/signup" class="font-bold text-yellow-300 hover:text-yellow-200 transition-colors" replace>Create your account</NuxtLink>, it takes less than a minute</div>
 
         <form id="formLoginAccount" @submit.prevent="loginAccount">
           <div class="form-control">
-            <div class="relative input-group border rounded-lg">
-              <div class="absolute mt-3 flex items-center ps-3.5">
-                <span class="material-symbols-outlined">mail</span>
-              </div>
-              <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="w-full input ps-12">
-            </div>
+            <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
+              <span class="text-xl opacity-70">📧</span>
+              <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="grow bg-transparent" />
+            </label>
             <InputLabel labelName="login_email"/>
           </div>
 
           <div class="form-control">
-            <div class="relative input-group border rounded-lg">
-              <div class="absolute mt-3 flex items-center ps-3.5">
-                <span class="material-symbols-outlined">lock</span>
-              </div>
-              <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="w-full input ps-12"> 
-            </div>
+            <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
+              <span class="text-xl opacity-70">🔒</span>
+              <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="grow bg-transparent" />
+            </label>
             <InputLabel labelName="login_password"/>
           </div>
 
-        <NuxtLink to="/forgot" class="text-apptheme font-bold float-right mb-4">Forgot Password?</NuxtLink>
+        <NuxtLink to="/forgot" class="text-yellow-300 hover:text-yellow-200 font-bold float-right mb-4 transition-colors">Forgot Password?</NuxtLink>
     
-          <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme text-white">
+          <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-pink-500/50">
             <span v-if="loading.login" class="loading loading-spinner loading-sm"></span>
-            <span>LOGIN</span>
+            <span>🚀 LOGIN</span>
           </button>
         </form>
       </div>
-    </div> 
-    
-
+    </div>
   </div>
 </template>
 

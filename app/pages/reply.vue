@@ -1,59 +1,99 @@
 <template>
-    <Navbar />
-    <div v-if="loading.page || messagePending" class="flex justify-center m-4">
-        <div class="skeleton bg-base-300 bg-opacity-30 h-32 w-full"></div>
-    </div>
-    <div v-else class="flex justify-center m-4">
-        <div class="card bg-base-300 bg-opacity-30  w-full">
-            <div class="card-body">
-                <blockquote class="relative ps-4">
-                    <p class="text-xl font-semibold truncate"><em>{{ messageData?.message }}</em></p>
-                    <div class="ms-4 mt-4">
-                        <div class="font-light">{{ messageData?.from == currentUser?.uid ? 'you' : 'anonymous' }}</div>
+    <div class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
+        </div>
+
+        <div class="relative z-10">
+            <Navbar />
+            
+            <!-- Original Message Card -->
+            <div v-if="loading.page || messagePending" class="flex justify-center m-4">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-32 w-full animate-pulse"></div>
+            </div>
+            <div v-else class="flex justify-center m-4">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-yellow-300/50 shadow-2xl w-full">
+                    <div class="flex items-start gap-4">
+                        <div class="text-4xl">💬</div>
+                        <div>
+                            <div class="text-lg font-black text-yellow-300 mb-2">Original Confession</div>
+                            <blockquote class="text-white/90 leading-relaxed italic">
+                                "{{ messageData?.message }}"
+                            </blockquote>
+                            <div class="mt-4 text-sm text-white/70">
+                                — {{ messageData?.from == currentUser?.uid ? 'you' : 'anonymous' }}
+                            </div>
+                        </div>
                     </div>
-                </blockquote>
-            </div>
-        </div>
-    </div>
-    
-    <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
-        <div class="skeleton bg-base-300 bg-opacity-30 h-24 w-full"></div>
-    </div>
-    <div v-else class="mx-4">
-        <div class="flex justify-center">
-            <button v-if="loadMoreMessage.button" @click="loadReplies" class="btn  btn-sm">Load Messages</button>
-            <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md"></span>
-        </div>
-        <div v-for="reply in replies" :key="reply.id">
-            <div :class="reply.to == currentUser?.uid ? 'chat chat-start' : 'chat chat-end'">
-                <div class="chat-image avatar">
-                    <div class= "rounded-full mr-2" :style="{
-                        'background-color': reply.fakecolor, 
-                        'min-width': '32px', 
-                        'min-height': '32px'
-                    }"></div>
                 </div>
-                <div class="chat-header">
-                    <p><em>{{ reply.from === currentUser?.uid ? 'you' : getUser }}</em></p>
-                    <time class="text-xs">{{ reply.createdOn.toDate().toLocaleString() }}</time>
-                </div>
-                <div class="break-words chat-bubble bg-base-300 text-white">{{ reply.reply }}</div>
             </div>
-        </div>  
-        <div ref="scrollHook"></div>
-        <div class="h-28"></div>
-    </div>
-    
-    <form id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 p-4 bg-base-300 bg-opacity-70 rounded-md shadow-lg ">
-        <div class="input input-bordered flex items-center gap-2 w-full">
-            <input v-model="form.send_reply" type="text" class="grow w-full p-2" placeholder="Type your message here..." />
-            <button type="submit" class="btn btn-sm m-2">
-                <span v-if="loading.send_reply" class="loading loading-spinner loading-sm"></span>
-                <span v-else class="material-symbols-outlined">send</span>
-            </button>
+            
+            <!-- Chat Messages -->
+            <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-24 w-full animate-pulse"></div>
+            </div>
+            <div v-else class="mx-4 pb-32">
+                <div class="flex justify-center mb-4">
+                    <button v-if="loadMoreMessage.button" @click="loadReplies" class="bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 transform hover:scale-105 border border-white/30">
+                        📜 Load More Messages
+                    </button>
+                    <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md text-yellow-300"></span>
+                </div>
+                
+                <div v-for="reply in replies" :key="reply.id" class="mb-4">
+                    <div :class="reply.to == currentUser?.uid ? 'flex justify-start' : 'flex justify-end'">
+                        <div :class="{
+                            'max-w-xs lg:max-w-md px-6 py-4 rounded-3xl shadow-2xl transform transition-all duration-300 hover:scale-105': true,
+                            'bg-white/10 backdrop-blur-lg border border-pink-300/50': reply.to == currentUser?.uid,
+                            'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg border border-yellow-300/50': reply.to != currentUser?.uid
+                        }">
+                            <div class="flex items-start gap-3">
+                                <div class="rounded-full min-w-[32px] min-h-[32px] flex-shrink-0 border-2 border-white/30" :style="{'background-color': reply.fakecolor}"></div>
+                                <div class="flex-grow">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="font-black text-sm text-yellow-300">
+                                            {{ reply.from === currentUser?.uid ? 'You' : getUser }}
+                                        </span>
+                                        <time class="text-xs text-white/60">{{ reply.createdOn.toDate().toLocaleTimeString() }}</time>
+                                    </div>
+                                    <div class="text-white/90 leading-relaxed break-words">{{ reply.reply }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div ref="scrollHook"></div>
+            </div>
+            
+            <!-- Message Input - Only show if sender is verified -->
+            <form v-if="messageData?.from && !isAnonymousSender" id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-lg border-t border-white/20">
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20 shadow-2xl">
+                        <div class="flex items-center gap-4">
+                            <input 
+                                v-model="form.send_reply" 
+                                type="text" 
+                                class="flex-grow bg-white/5 border-2 border-white/30 focus:border-yellow-300 rounded-xl px-4 py-3 text-white placeholder-white/60 font-medium transition-all duration-300" 
+                                placeholder="💭 Type your reply here..." 
+                            />
+                            <button 
+                                type="submit" 
+                                class="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black p-3 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-pink-500/50 min-w-[50px]"
+                                :disabled="loading.send_reply"
+                            >
+                                <span v-if="loading.send_reply" class="loading loading-spinner loading-sm"></span>
+                                <span v-else class="text-xl">🚀</span>
+                            </button>
+                        </div>
+                        <InputLabel labelName="send_reply" />
+                    </div>
+                </div>
+            </form>
         </div>
-        <InputLabel labelName="send_reply" />
-    </form>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -76,6 +116,21 @@
     const replies = ref<ReplyDetails[]>([]);
     const loadedTill = ref<DocumentData>();
     const loadMoreMessage = reactive({button: false, loading: false});
+
+    // Check if we should hide reply form - hide if other person is anonymous/unverified
+    const isAnonymousSender = computed(() => {
+        if (!messageData.value || !currentUser.value || !userData.value) return true;
+        
+        // Find the other person in the conversation (not current user)
+        const otherPerson = userData.value.find(user => user.id !== currentUser.value?.uid);
+        
+        // If we can't find the other person's profile, assume they're anonymous
+        if (!otherPerson) return true;
+        
+        // Hide reply form if the other person doesn't have a complete profile
+        // (which indicates they're anonymous/unverified)
+        return !otherPerson.name || !otherPerson.username;
+    });
 
     watchEffect(() => loading.page = currentUser == undefined);
 

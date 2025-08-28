@@ -1,42 +1,64 @@
 <template>
-
-    <dialog id="completeProfileModal" :class="completeProfileModal.open ? 'modal modal-open' : 'modal' ">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg mb-4">Complete Profile</h3>
+    <div v-if="completeProfileModal.open" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-100">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">✨</div>
+                <h3 class="text-4xl font-black text-white mb-3">Complete Your Profile</h3>
+                <p class="text-white/80 leading-relaxed">
+                    Just a couple more details to unlock the full experience! 🚀
+                </p>
+            </div>
 
             <form id="formCreateAccount" @submit.prevent="createAccount">
-                <div class="form-control">
-                    <div class="relative input-group border rounded-lg">
-                        <div class="absolute mt-3 flex items-center ps-3.5">
-                            <span class="material-symbols-outlined">badge</span>
-                        </div>
-                        <input id="inputName" v-model="form.update_name" type="text" placeholder="Enter your name" class="w-full input ps-12">
-                    </div>
+                <div class="form-control mb-6">
+                    <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl w-full">
+                        <span class="text-xl opacity-70 flex-shrink-0">👤</span>
+                        <input 
+                            id="inputName" 
+                            v-model="form.update_name" 
+                            type="text" 
+                            placeholder="Enter your name" 
+                            class="flex-1 w-full bg-transparent text-white placeholder-white/60 font-medium border-none outline-none"
+                        >
+                    </label>
                     <InputLabel labelName="update_name"/>
                 </div>
 
-                <div class="form-control">
-                    <div class="relative input-group border rounded-lg">
-                        <div class="absolute mt-3 flex items-center ps-3.5">
-                            <span class="material-symbols-outlined">alternate_email</span>
-                        </div>
-                        <input id="inputUsername" autocomplete="false" v-model="form.update_username" type="text" placeholder="Choose a username" class="w-full input ps-12"> 
-                    </div>
+                <div class="form-control mb-8">
+                    <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl w-full">
+                        <span class="text-xl opacity-70 flex-shrink-0">@</span>
+                        <input 
+                            id="inputUsername" 
+                            autocomplete="false" 
+                            v-model="form.update_username" 
+                            type="text" 
+                            placeholder="Choose a username" 
+                            class="flex-1 w-full bg-transparent text-white placeholder-white/60 font-medium border-none outline-none"
+                        > 
+                    </label>
                     <InputLabel labelName="update_username"/>
                 </div>
 
-                <div class="modal-action">
-                    <button type="submit" class="btn btn-block glass bg-apptheme hover:bg-apptheme">
-                        <span v-if="loading.continue" class="loading loading-spinner loading-sm"></span>
-                        <span>CONTINUE</span>
-                    </button>
-                </div>
-
-                
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-pink-500/50"
+                    :disabled="loading.continue"
+                >
+                    <span v-if="loading.continue" class="loading loading-spinner loading-sm"></span>
+                    <span v-else>🎉 CONTINUE TO DASHBOARD</span>
+                </button>
             </form>
-            
+
+            <!-- Fun Benefits -->
+            <div class="mt-8 p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
+                <div class="text-center">
+                    <div class="text-sm text-white/80 leading-relaxed">
+                        🔗 Get your personal link • 💬 Receive confessions • 🎭 Stay anonymous
+                    </div>
+                </div>
+            </div>
         </div>
-    </dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
