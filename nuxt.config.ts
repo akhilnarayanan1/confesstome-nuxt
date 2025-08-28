@@ -6,8 +6,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      baseUrl: process.env.BASE_URL || 'confessto.me',
-      appName: process.env.APP_NAME || 'ConfessTo.Me'
+      baseUrl: process.env.BASE_URL,
+      appName: process.env.APP_NAME
     }
   },
 
