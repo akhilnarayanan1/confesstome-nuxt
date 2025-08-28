@@ -20,7 +20,7 @@
                 
                 <!-- Loading Menu -->
                 <ul v-if="!profile.username" tabindex="0" class="menu dropdown-content p-4 shadow-2xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl w-52 mt-4">
-                    <div v-for="_ in Array.from({length: 3})" :key="_" class="mb-2">
+                    <div v-for="(_, index) in Array.from({length: 3})" :key="index" class="mb-2">
                         <div class="h-8 bg-white/20 rounded-xl animate-pulse"></div>
                     </div>
                 </ul>

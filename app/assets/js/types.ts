@@ -2,7 +2,7 @@ import { type Timestamp } from "firebase/firestore";
 
 interface AlertData{
   message: string,
-  type: 'error' | 'success'| 'warning',
+  type: 'error' | 'success'| 'warning' | 'info',
   source: 'ui' | 'server'
   fieldid: string,
 };

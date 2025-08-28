@@ -1,17 +1,7 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
-        <!-- Animated background elements -->
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-            <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
-        </div>
-
-        <div class="relative z-10">
-            <Navbar />
             
             <!-- Original Message Card -->
-            <div v-if="loading.page || messagePending" class="flex justify-center m-4">
+            <div v-if="messagePending" class="flex justify-center m-4">
                 <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-32 w-full animate-pulse"></div>
             </div>
             <div v-else class="flex justify-center m-4">
@@ -32,7 +22,7 @@
             </div>
             
             <!-- Chat Messages -->
-            <div v-if="loading.page || messagePending || repliesPending" class="flex justify-center m-4">
+            <div v-if="messagePending || repliesPending" class="flex justify-center m-4">
                 <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-24 w-full animate-pulse"></div>
             </div>
             <div v-else class="mx-4 pb-32">
@@ -92,8 +82,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -112,7 +100,7 @@
 
     const scrollHook = ref<HTMLElement | null>(null);
     const form = reactive({ send_reply: '' });
-    const loading = reactive({ page: true, send_reply: false });
+    const loading = reactive({ send_reply: false });
     const replies = ref<ReplyDetails[]>([]);
     const loadedTill = ref<DocumentData>();
     const loadMoreMessage = reactive({button: false, loading: false});
@@ -132,7 +120,7 @@
         return !otherPerson.name || !otherPerson.username;
     });
 
-    watchEffect(() => loading.page = currentUser == undefined);
+    definePageMeta({ layout: 'app' });
 
     const { data: messageData, error: messageError, pending: messagePending } = useDocument<MessageDetails>(
         () => (route.query.cid && currentUser.value) 

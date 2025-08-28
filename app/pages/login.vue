@@ -1,13 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
-    <!-- Animated background elements -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
-    </div>
-
-    <div class="flex items-center justify-center min-h-screen relative z-10">
+    <div class="flex items-center justify-center min-h-screen">
       <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-sm w-full m-4">
           
         <div class="text-4xl font-black mb-6 text-center">🎭 Login</div>
@@ -39,7 +31,6 @@
         </form>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -47,6 +38,8 @@
   import type { ToastData } from "@/assets/js/types";
   import { signInWithEmailAndPassword, sendEmailVerification, type User } from "firebase/auth";
   import { LoginForm } from "@/assets/js/forms";
+
+  definePageMeta({ layout: 'auth' });
     
   let loading: { login: boolean } = reactive({ login: false });
 

@@ -1,5 +1,4 @@
 <template>
-    <Navbar />
     <div class="p-4">
         <!-- Loading State -->
         <div v-if="!profile.username" class="max-w-4xl mx-auto">

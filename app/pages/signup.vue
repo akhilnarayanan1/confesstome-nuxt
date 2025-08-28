@@ -1,14 +1,5 @@
 <template>
-  <div v-if="loading.page"><CircleLoad /></div>
-  <div v-else class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
-    <!-- Animated background elements -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 2s;"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style="animation-delay: 4s;"></div>
-    </div>
-
-    <div class="flex items-center justify-center min-h-screen relative z-10">
+    <div class="flex items-center justify-center min-h-screen">
       <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-sm w-full m-4">
         <div class="text-4xl font-black mb-6 text-center">🚀 Signup</div>
         <div class="mb-6 text-center text-white/90">Already have an account? <NuxtLink to="/login" class="text-yellow-300 hover:text-yellow-200 font-bold transition-colors" replace>Login here</NuxtLink>, and stay ahead!</div>
@@ -56,7 +47,6 @@
           </button> -->
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -65,11 +55,11 @@
   import { linkWithCredential, EmailAuthProvider, sendEmailVerification, type User } from "firebase/auth";
   import { SignupForm } from "@/assets/js/forms";
   
-  let loading = reactive({ page: true, signup: false });
+  definePageMeta({ layout: 'auth' });
+  
+  let loading = reactive({ signup: false });
 
   const currentUser = useCurrentUser();
-  
-  watchEffect(() => loading.page = currentUser.value == undefined);
   
   const router = useRouter();
 
