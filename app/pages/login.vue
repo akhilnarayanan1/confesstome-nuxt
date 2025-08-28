@@ -68,6 +68,7 @@
     .then((userCredential) => {
       loading.login = false;
       if (userCredential.user.emailVerified) {
+        performLogin();
         router.replace({name: "dashboard",});
       } else {
         addToast({

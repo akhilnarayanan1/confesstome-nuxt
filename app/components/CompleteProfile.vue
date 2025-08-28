@@ -146,6 +146,7 @@
                 createdOn: serverTimestamp(),
             });
             completeProfileModal.open = false;
+            performLogin();
             emit('loadProfile');
             addToast({
                 message: "Profile updated successfully!",

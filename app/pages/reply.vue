@@ -120,7 +120,7 @@
         return !otherPerson.name || !otherPerson.username;
     });
 
-    definePageMeta({ layout: 'app' });
+    definePageMeta({ layout: 'app', middleware: 'auth' });
 
     const { data: messageData, error: messageError, pending: messagePending } = useDocument<MessageDetails>(
         () => (route.query.cid && currentUser.value) 

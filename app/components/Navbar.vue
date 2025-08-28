@@ -79,30 +79,13 @@
 
 
     const signOutUser = async () => {
-        if (!user.value?.isAnonymous as boolean) {
-            // console.log(user.value)
-            // const anonymousUserCredential = await signInAnonymously(auth);
-            // linkWithCredential(user.value as User, anonymousUserCredential )
-            // await unlink(user.value as User, user.value?.providerData[0].providerId as string)
-            // .catch(error => {
-            //     addToast({
-            //         message: error,
-            //         type: "error",
-            //     });
-            // });
-            // signOut(auth).catch(error => {
-            //     addToast({
-            //         message: error,
-            //         type: "error",
-            //     });
-            // });
-        } else {
-            addToast({
-                message: "Already signedout. Can't signout again.",
-                type: "error",
-                duration: 3000,
-            });
-        };
+        performSignout();
+        showLogoutModal.value = false;
+        addToast({
+            message: "Signed out successfully!",
+            type: "success",
+            duration: 2000,
+        });
     };
 
 </script>

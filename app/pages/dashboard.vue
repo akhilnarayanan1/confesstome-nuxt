@@ -7,7 +7,7 @@
   import { doc, getDoc } from "firebase/firestore";
   import type { FirestoreUserProfile, ToastData } from "@/assets/js/types";
 
-  definePageMeta({ layout: 'app' });
+  definePageMeta({ layout: 'app', middleware: 'auth' });
 
   //Set and clear field alert on page load
   clearFieldAlerts();

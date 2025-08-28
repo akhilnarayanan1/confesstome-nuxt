@@ -4,8 +4,6 @@
       <NuxtPage />
       <Toast /> 
     </NuxtLayout>
-    <!-- <div>-----------------------</div>
-    {{ getProfile() }} -->
   </div>
 </template>
 
@@ -52,6 +50,10 @@
 
     const { id, createdOn, name, username } = querySnapshot.data() as FirestoreUserProfile;
     setProfile({ id, createdOn, name, username });
+    
+    if (!getIsLoggedIn()) {
+      performLogin();
+    }
 
   };
 </script>

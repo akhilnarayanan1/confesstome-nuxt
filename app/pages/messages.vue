@@ -181,7 +181,7 @@
   import { useCollection } from 'vuefire';
   import _ from "lodash";
 
-  definePageMeta({ layout: 'app' });
+  definePageMeta({ layout: 'app', middleware: 'auth' });
 
   const currentUser = useCurrentUser();
   const db = useFirestore()!;
