@@ -14,7 +14,7 @@
           <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight mb-8">
             🎭 Get Anonymous 
             <br>
-            <span class="bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent animate-pulse">
+            <span class="bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent">
               Confessions! 
             </span>
             🤫
@@ -26,7 +26,7 @@
           <div class="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-lg mx-auto">
             <NuxtLink 
               to="/signup" 
-              class="w-full sm:w-auto bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black py-4 px-10 rounded-full text-lg transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-pink-500/50 animate-pulse"
+              class="w-full sm:w-auto bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black py-4 px-10 rounded-full text-lg transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-pink-500/50"
             >
               🚀 Start the Drama!
             </NuxtLink>
@@ -112,10 +112,10 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <div class="text-3xl font-black bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent mb-6">
-            ✨ ConfessTo.Me ✨
+            ✨ {{ appConfig.appName }} ✨
           </div>
           <div class="text-sm text-white/70 max-w-4xl mx-auto leading-relaxed space-y-3 font-medium">
-            <p>© 2024 ConfessTo.Me. All rights reserved. 🔥💯</p>
+            <p>© 2024 {{ appConfig.appName }}. All rights reserved. 🔥💯</p>
             <p class="text-xs">
               <strong>⚠️ Real Talk:</strong> This platform is for fun but be responsible! 
               Report any mean stuff so we can keep the vibes positive! 🌟💖
@@ -128,5 +128,5 @@
 </template>
 
 <script setup lang="ts">
-
+  const appConfig = useAppConfig();
 </script>

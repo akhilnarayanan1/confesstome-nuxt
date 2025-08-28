@@ -2,7 +2,7 @@
     <div class="navbar backdrop-blur-lg sticky top-0 z-40">
         <div class="flex-1">
             <NuxtLink to="/" class="btn btn-ghost text-xl text-white hover:bg-white/20 font-black">
-                🎭 ConfessTo.Me
+                🎭 {{ appConfig.appName }}
             </NuxtLink>
         </div>
         <div class="flex-none">
@@ -75,6 +75,7 @@
     const showLogoutModal = ref(false);
 
     const profile = getProfile();
+    const appConfig = useAppConfig();
 
 
     const signOutUser = async () => {

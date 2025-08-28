@@ -4,6 +4,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['nuxt-vuefire'],
 
+  runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL || 'confessto.me',
+      appName: process.env.APP_NAME || 'ConfessTo.Me'
+    }
+  },
+
   css: ["@/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],

@@ -17,24 +17,24 @@
 
         <!-- Dashboard Content -->
         <div v-else class="max-w-4xl mx-auto">
-            <!-- Personal Link Card -->
-            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-yellow-300/50 hover:bg-white/20 mb-8 transform transition-all duration-300 hover:scale-[1.02]">
-                <div class="flex items-center justify-between flex-wrap gap-4">
+            <!-- Personal Link -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between flex-wrap gap-4 md:flex-row flex-col">
                     <div class="flex items-center gap-4">
-                        <div class="text-4xl">🔗</div>
+                        <div class="text-2xl">🔗</div>
                         <div>
-                            <div class="text-lg font-black text-yellow-300 mb-1">Your Personal Link</div>
-                            <div class="text-white/90 font-mono bg-white/10 px-3 py-2 rounded-xl border border-white/20">
-                                confessto.me/@{{ profile.username }}
+                            <div class="text-sm text-white/70 font-medium mb-1">Your Personal Link</div>
+                            <div class="text-white font-mono text-lg">
+                                {{ appConfig.baseUrl }}/@{{ profile.username }}
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button class="bg-white/20 hover:bg-white/30 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 border border-white/30">
-                            <span class="material-symbols-outlined">content_copy</span>
+                    <div class="flex gap-2 md:justify-end justify-center w-full md:w-auto">
+                        <button class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-lg transition-all duration-300 transform hover:scale-110 border border-white/30">
+                            <span class="material-symbols-outlined text-lg">content_copy</span>
                         </button>
-                        <button class="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-lg">
-                            <span class="material-symbols-outlined">share</span>
+                        <button class="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white p-2 rounded-lg transition-all duration-300 transform hover:scale-110 shadow-lg">
+                            <span class="material-symbols-outlined text-lg">share</span>
                         </button>
                     </div>
                 </div>
@@ -89,4 +89,5 @@
 
 <script setup lang="ts">
     const profile = getProfile();
+    const appConfig = useAppConfig();
 </script>
