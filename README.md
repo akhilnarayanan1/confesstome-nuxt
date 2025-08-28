@@ -36,6 +36,8 @@ FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 FIREBASE_APP_ID=your_app_id
 FIREBASE_MEASUREMENT_ID=your_measurement_id
 GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+BASE_URL=confessto.me
+APP_NAME=ConfessTo.Me
 ```
 
 3. Configure Firebase Service Account (for server-side operations):
@@ -53,19 +55,59 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-app/
-├── pages/           # Route-based pages
-│   ├── index.vue    # Landing page
-│   ├── @[user].vue  # User profile/confession page
-│   ├── messages.vue # Chat list
-│   ├── reply.vue    # Chat interface
-│   └── auth/        # Authentication pages
-├── components/      # Reusable Vue components
-├── composables/     # Vue composables for state
-├── assets/
-│   ├── css/        # Global styles
-│   └── js/         # TypeScript utilities
-└── layouts/        # Page layouts
+confesstome-nuxt/
+├── app/
+│   ├── pages/           # Route-based pages
+│   │   ├── index.vue    # Landing page
+│   │   ├── @[user].vue  # User profile/confession page
+│   │   ├── messages.vue # Chat list
+│   │   ├── reply.vue    # Chat interface
+│   │   ├── dashboard.vue # User dashboard
+│   │   ├── auth-handler.vue # Authentication handler
+│   │   ├── login.vue    # User login
+│   │   ├── signup.vue   # User registration
+│   │   └── forgot.vue   # Password reset
+│   ├── components/      # Reusable Vue components
+│   │   ├── Dashboard.vue
+│   │   ├── CompleteProfile.vue
+│   │   ├── Toast.vue
+│   │   ├── Navbar.vue
+│   │   ├── CircleLoad.vue
+│   │   ├── InputLabel.vue
+│   │   ├── LoadingChats.vue
+│   │   └── LoadingDashboard.vue
+│   ├── composables/     # Vue composables for state
+│   │   ├── profile.ts   # User profile state
+│   │   ├── toasts.ts    # Toast notifications
+│   │   ├── fieldAlerts.ts # Form validation alerts
+│   │   ├── alert.ts     # General alerts
+│   │   └── app.ts       # App configuration
+│   ├── assets/
+│   │   ├── css/
+│   │   │   └── main.css # Global styles with Material Symbols
+│   │   └── js/          # TypeScript utilities
+│   │       ├── types.ts # TypeScript interfaces
+│   │       ├── functions.ts # Utility functions
+│   │       └── forms.ts # Form validation classes
+│   ├── layouts/         # Page layouts
+│   │   ├── default.vue  # Default layout
+│   │   ├── app.vue      # Main app layout
+│   │   └── auth.vue     # Authentication layout
+│   └── app.vue          # Root component
+├── public/              # Static assets
+│   ├── favicon.ico
+│   └── icons8-google.svg
+├── dist/                # Build output (generated)
+├── node_modules/        # Dependencies (generated)
+├── nuxt.config.ts       # Nuxt configuration
+├── package.json         # Project dependencies
+├── package-lock.json    # Lock file
+├── tailwind.config.js   # Tailwind CSS configuration
+├── tsconfig.json        # TypeScript configuration
+├── firebase.json        # Firebase configuration
+├── firestore.indexes.json # Firestore indexes
+├── firestore.rules      # Firestore security rules
+└── service-account.json # Firebase service account (gitignored)
 ```
 
 ## 🔥 Firebase Collections
