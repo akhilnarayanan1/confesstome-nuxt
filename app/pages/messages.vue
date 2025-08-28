@@ -195,7 +195,7 @@
   import _ from "lodash";
 
   const currentUser = useCurrentUser();
-  const db = useFirestore();
+  const db = useFirestore()!;
   const route = useRoute();
 
   const loading = reactive({ page: true, messages: true })

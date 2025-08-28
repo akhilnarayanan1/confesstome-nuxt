@@ -3,7 +3,6 @@
     <NuxtLayout>
       <NuxtPage />
       <Toast /> 
-      <CompleteProfile @load-profile="loadProfile(user)" />
     </NuxtLayout>
     <!-- <div>-----------------------</div>
     {{ getProfile() }} -->
@@ -18,7 +17,7 @@
   import type {User} from "firebase/auth";
     
   const auth = useFirebaseAuth()!;
-  const db = useFirestore();
+  const db = useFirestore()!;
 
   let user: User;
 

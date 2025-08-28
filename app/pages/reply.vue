@@ -107,7 +107,7 @@
     import _ from "lodash";
 
     const currentUser = useCurrentUser();
-    const db = useFirestore();
+    const db = useFirestore()!;
     const route = useRoute();
 
     const scrollHook = ref<HTMLElement | null>(null);

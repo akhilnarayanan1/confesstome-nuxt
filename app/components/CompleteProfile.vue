@@ -67,26 +67,39 @@
     import { collection, query, where, getDocs, and } from "firebase/firestore";
     import { CompleteProfileForm } from "@/assets/js/forms";
 
+    // Add props to control when profile completion should be active
+    const props = defineProps({
+        active: {
+            type: Boolean,
+            default: false
+        }
+    });
+
     const currentUser = useCurrentUser();
-    const db = useFirestore();
+    const db = useFirestore()!;
     
     watch(currentUser, (newCurrentUser) => {
         if (newCurrentUser === undefined || newCurrentUser === null) {
-            //Stop processing if user is blank
-            addToast({
-                message: "Unknown error, Please try again (101)",
-                type: "error",
-                duration: 2000,
-            } as ToastData);
+            //Stop processing if user is blank - don't show error during initial auth
             return;
-        } else {
+        } else if (props.active) {
+            // Only check profile completion when component is active
             isProfileCompleted();
         };
     });
     
+    // Also watch for active prop changes
+    watch(() => props.active, (isActive) => {
+        if (isActive && currentUser.value) {
+            isProfileCompleted();
+        } else if (!isActive) {
+            completeProfileModal.open = false;
+        }
+    });
+    
     const loading = reactive({ continue: false });
     const completeProfileModal = reactive({ loading:true, open: false });
-    const emit = defineEmits(['loadProfile'])
+    const emit = defineEmits(['loadProfile']);
 
     //Create a form
     const form = reactive({

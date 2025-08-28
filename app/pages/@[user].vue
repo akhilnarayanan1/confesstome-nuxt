@@ -168,11 +168,8 @@
 
     //Stop processing if user is blank
     if(currentUser.value == undefined) {
-      addToast({
-        message: "Unknown error, Please try again (101)",
-        type: "error",
-        duration: 2000,
-      } as ToastData);
+      // Don't show error during initial auth - just return silently
+      loading.sendMessage = false;
       return;
     };
 
