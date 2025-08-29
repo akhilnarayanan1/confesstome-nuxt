@@ -81,6 +81,7 @@ confesstome-nuxt/
 │   │   ├── toasts.ts    # Toast notifications
 │   │   ├── fieldAlerts.ts # Form validation alerts
 │   │   ├── alert.ts     # General alerts
+│   │   ├── auth.ts      # Authentication state management
 │   │   └── app.ts       # App configuration
 │   ├── assets/
 │   │   ├── css/
@@ -93,6 +94,8 @@ confesstome-nuxt/
 │   │   ├── default.vue  # Default layout
 │   │   ├── app.vue      # Main app layout
 │   │   └── auth.vue     # Authentication layout
+│   ├── middleware/      # Route middleware
+│   │   └── auth.ts      # Authentication guard middleware
 │   └── app.vue          # Root component
 ├── public/              # Static assets
 │   ├── favicon.ico
