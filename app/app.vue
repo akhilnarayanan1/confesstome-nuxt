@@ -40,11 +40,11 @@
     });
 
     if (!querySnapshot || !querySnapshot.exists()) {
-      addToast({
-        message: "Please complete your profile to continue.",
-        type: "error",
-        duration: 2000,
-      } as ToastData);
+      // Profile is incomplete, but still perform login so user can reach dashboard
+      // where CompleteProfile component will handle the modal
+      if (!getIsLoggedIn()) {
+        performLogin();
+      }
       return;
     };
 

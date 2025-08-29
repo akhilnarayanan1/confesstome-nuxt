@@ -21,7 +21,7 @@
                 <!-- Loaded Menu -->
                 <ul v-else tabindex="0" class="menu dropdown-content p-2 shadow-2xl bg-black/60 backdrop-blur-sm border border-white/20 rounded-2xl w-52 mt-4 text-white">
                     <li>
-                        <a class="rounded-xl hover:bg-white/20 transition-colors font-medium">
+                        <a @click="showEditProfile = true" class="rounded-xl hover:bg-white/20 transition-colors font-medium cursor-pointer">
                             <span class="material-symbols-outlined text-yellow-300">edit</span>
                             Edit Profile
                         </a>
@@ -36,6 +36,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Profile Modal -->
+    <CompleteProfile :active="showEditProfile" :editMode="true" @load-profile="onProfileUpdated" />
 
     <!-- Logout Confirmation Modal -->
     <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -73,6 +76,7 @@
 
     const isDark = ref(false);
     const showLogoutModal = ref(false);
+    const showEditProfile = ref(false);
 
     const profile = getProfile();
     const appConfig = useAppMetaConfig();
@@ -83,6 +87,15 @@
         showLogoutModal.value = false;
         addToast({
             message: "Signed out successfully!",
+            type: "success",
+            duration: 2000,
+        });
+    };
+
+    const onProfileUpdated = () => {
+        showEditProfile.value = false;
+        addToast({
+            message: "Profile updated successfully!",
             type: "success",
             duration: 2000,
         });

@@ -1,11 +1,16 @@
 <template>
     <div v-if="completeProfileModal.open" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-100">
+        <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl max-w-lg w-full transform transition-all duration-300 scale-100 relative">
+            <!-- Close button for edit mode -->
+            <button v-if="isEditMode" @click="completeProfileModal.open = false" class="absolute top-4 right-4 text-white/70 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors">
+                ✕
+            </button>
+            
             <div class="text-center mb-8">
                 <div class="text-6xl mb-4">✨</div>
-                <h3 class="text-4xl font-black text-white mb-3">Complete Your Profile</h3>
+                <h3 class="text-4xl font-black text-white mb-3">{{ isEditMode ? 'Edit Your Profile' : 'Complete Your Profile' }}</h3>
                 <p class="text-white/80 leading-relaxed">
-                    Just a couple more details to unlock the full experience! 🚀
+                    {{ isEditMode ? 'Update your profile information below! ✏️' : 'Just a couple more details to unlock the full experience! 🚀' }}
                 </p>
             </div>
 
@@ -45,7 +50,7 @@
                     :disabled="loading.continue"
                 >
                     <span v-if="loading.continue" class="loading loading-spinner loading-sm"></span>
-                    <span v-else>🎉 CONTINUE TO DASHBOARD</span>
+                    <span v-else>{{ isEditMode ? '💾 UPDATE PROFILE' : '🎉 CONTINUE TO DASHBOARD' }}</span>
                 </button>
             </form>
 
@@ -72,21 +77,59 @@
         active: {
             type: Boolean,
             default: false
+        },
+        editMode: {
+            type: Boolean,
+            default: false
         }
     });
+
+    const isEditMode = computed(() => props.editMode);
 
     const currentUser = useCurrentUser();
     const db = useFirestore()!;
     
+    const loading = reactive({ continue: false });
+    const completeProfileModal = reactive({ loading:true, open: false });
+    const emit = defineEmits(['loadProfile']);
+
+    const isProfileCompleted = async () => {
+        const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string)).catch((err) => {
+            addToast({
+                message: err,
+                type: "error",
+                duration: 2000,
+            } as ToastData);
+        });
+        completeProfileModal.loading = false;
+        
+        // Pre-populate form with existing data if available
+        if (userSnap && userSnap.exists()) {
+            const userData = userSnap.data();
+            form.update_name = userData?.name || '';
+            form.update_username = userData?.username || '';
+        }
+        
+        // Show modal based on mode:
+        // Edit mode: always show when active
+        // Complete mode: only show if profile is incomplete
+        if (isEditMode.value) {
+            completeProfileModal.open = true;
+        } else if (!userSnap || !userSnap.exists() || !userSnap.data()?.name || !userSnap.data()?.username) {
+            completeProfileModal.open = true;
+        } 
+    };
+    
+    // Watch for user changes and check profile completion
     watch(currentUser, (newCurrentUser) => {
         if (newCurrentUser === undefined || newCurrentUser === null) {
-            //Stop processing if user is blank - don't show error during initial auth
+            completeProfileModal.open = false;
             return;
-        } else if (props.active) {
-            // Only check profile completion when component is active
+        }
+        if (props.active) {
             isProfileCompleted();
-        };
-    });
+        }
+    }, { immediate: true });
     
     // Also watch for active prop changes
     watch(() => props.active, (isActive) => {
@@ -95,11 +138,7 @@
         } else if (!isActive) {
             completeProfileModal.open = false;
         }
-    });
-    
-    const loading = reactive({ continue: false });
-    const completeProfileModal = reactive({ loading:true, open: false });
-    const emit = defineEmits(['loadProfile']);
+    }, { immediate: true });
 
     //Create a form
     const form = reactive({
@@ -118,7 +157,8 @@
             return;
         };
 
-        //Stop processing if any UI error
+        //Clear previous field alerts and validate form
+        clearFieldAlerts();
         const completeProfileForm = new CompleteProfileForm(form);
         if(!completeProfileForm.checkFormValid()) return;
 
@@ -141,34 +181,27 @@
             })
         } else {
             await setDoc(doc(db, "users", currentUser.value?.uid as string), {
-                name: form.update_name,
+                name: form.update_name.trim(),
                 username: form.update_username,
                 createdOn: serverTimestamp(),
             });
             completeProfileModal.open = false;
-            performLogin();
+            
+            if (!isEditMode.value) {
+                performLogin();
+            }
+            
             emit('loadProfile');
-            addToast({
-                message: "Profile updated successfully!",
-                type: "success",
-                duration: 2000,
-            } as ToastData);
+            
+            if (!isEditMode.value) {
+                addToast({
+                    message: "Profile updated successfully!",
+                    type: "success",
+                    duration: 2000,
+                } as ToastData);
+            }
         }
         loading.continue = false;
-    };
-
-    const isProfileCompleted = async () => {
-        const userSnap = await getDoc(doc(db, "users", currentUser.value?.uid as string)).catch((err) => {
-            addToast({
-                message: err,
-                type: "error",
-                duration: 2000,
-            } as ToastData);
-        });
-        completeProfileModal.loading = false;
-        if (!currentUser.value?.isAnonymous && (!userSnap || !userSnap.exists() || !userSnap.data().name || !userSnap.data().username)) {
-            completeProfileModal.open = true;
-        } 
     };
 
 </script>

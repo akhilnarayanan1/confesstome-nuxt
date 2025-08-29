@@ -216,6 +216,7 @@ class CompleteProfileForm {
       watchAlert(this.form as RandomKeyValue);
   }
   checkRequiredFields(){
+    // Name validation - required and cannot be only spaces
     if(this.form.update_name.length <= 0){
       addFieldAlert({
         message: "Name is required",
@@ -223,15 +224,16 @@ class CompleteProfileForm {
         source: "ui",
         fieldid: "update_name",
       } as AlertData);
+    } else if(this.form.update_name.trim().length === 0){
+      addFieldAlert({
+        message: "Name cannot be only spaces",
+        type: "error",
+        source: "ui",
+        fieldid: "update_name",
+      } as AlertData);
     };
-    // if(this.form.update_name.length <= 2){ // set REGEX
-    //   addFieldAlert({
-    //     message: "Name should be atleast 3 characters long",
-    //     type: "error",
-    //     source: "ui",
-    //     fieldid: "update_name",
-    //   } as AlertData);
-    // };
+    
+    // Username validation - required, lowercase alphanumeric only
     if (this.form.update_username.length <= 0) {
       addFieldAlert({
         message: "Username is required",
@@ -239,15 +241,14 @@ class CompleteProfileForm {
         source: "ui",
         fieldid: "update_username",
       } as AlertData);
+    } else if (!/^[a-z0-9]+$/.test(this.form.update_username)) {
+      addFieldAlert({
+        message: "Username must be lowercase letters and numbers only",
+        type: "error",
+        source: "ui",
+        fieldid: "update_username",
+      } as AlertData);
     };
-    // if (this.form.update_username.length <= 0) { // set REGEX
-    //   addFieldAlert({
-    //     message: "Username is reqired",
-    //     type: "error",
-    //     source: "ui",
-    //     fieldid: "update_username",
-    //   } as AlertData);
-    // };
   };
   checkFormValid() {
     this.checkRequiredFields();
