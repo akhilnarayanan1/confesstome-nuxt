@@ -1,3 +1,4 @@
+
 <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white relative overflow-hidden">
     <!-- Animated background elements -->
@@ -87,7 +88,7 @@
   import { verifyPasswordResetCode, applyActionCode, confirmPasswordReset } from "firebase/auth";
   import { ResetPasswordForm } from "@/assets/js/forms";
 
-  const loading: { data: boolean, reset: boolean } = reactive({ data: false, reset: false });
+  const loading: { data: boolean, reset: boolean } = reactive({ data: true, reset: false });
 
   //Set and clear field alert on page load
   let fieldAlert = getFieldAlerts();
@@ -170,14 +171,13 @@
 
   switch (mode) {
     case "resetPassword":
-      loading.data = true;
       handleResetPassword(actionCode, continueUrl, lang);
       break;
     case "verifyEmail":
-      loading.data = true;
       handleVerifyEmail(actionCode, continueUrl, lang);
       break;
     default:
+      loading.data = false;
       break;
   };
 

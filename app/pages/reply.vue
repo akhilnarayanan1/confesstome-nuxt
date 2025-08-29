@@ -2,10 +2,10 @@
             
             <!-- Original Message Card -->
             <div v-if="messagePending" class="flex justify-center m-4">
-                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-32 w-full animate-pulse"></div>
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 h-32 w-full animate-pulse"></div>
             </div>
             <div v-else class="flex justify-center m-4">
-                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-yellow-300/50 shadow-2xl w-full">
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-6 border border-yellow-300/50 w-full">
                     <div class="flex items-start gap-4">
                         <div class="text-4xl">💬</div>
                         <div>
@@ -23,7 +23,7 @@
             
             <!-- Chat Messages -->
             <div v-if="messagePending || repliesPending" class="flex justify-center m-4">
-                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl h-24 w-full animate-pulse"></div>
+                <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 h-24 w-full animate-pulse"></div>
             </div>
             <div v-else class="mx-4 pb-32">
                 <div class="flex justify-center mb-4">
@@ -33,10 +33,10 @@
                     <span v-if="loadMoreMessage.loading" class="loading loading-spinner loading-md text-yellow-300"></span>
                 </div>
                 
-                <div v-for="reply in replies" :key="reply.id" class="mb-4">
+                <div v-for="reply in replies" :key="reply.id" class="mb-2">
                     <div :class="reply.to == currentUser?.uid ? 'flex justify-start' : 'flex justify-end'">
                         <div :class="{
-                            'max-w-xs lg:max-w-md px-6 py-4 rounded-3xl shadow-2xl transform transition-all duration-300 hover:scale-105': true,
+                            'max-w-xs lg:max-w-md px-4 py-3 rounded-3xl transform transition-all duration-300 hover:scale-105': true,
                             'bg-white/10 backdrop-blur-lg border border-pink-300/50': reply.to == currentUser?.uid,
                             'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg border border-yellow-300/50': reply.to != currentUser?.uid
                         }">
@@ -59,26 +59,26 @@
             </div>
             
             <!-- Message Input - Only show if sender is verified -->
-            <form v-if="messageData?.from && !isAnonymousSender" id="searchUserForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-lg border-t border-white/20">
+            <form v-if="messageData?.from && !isAnonymousSender && !messagePending && !repliesPending" id="sendReplyForm" @submit.prevent="sendReply" class="w-full fixed bottom-0 left-0 right-0 p-4 bg-black/20 backdrop-blur-lg border-t border-white/20">
                 <div class="max-w-6xl mx-auto">
-                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20 shadow-2xl">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20">
                         <div class="flex items-center gap-4">
                             <input 
                                 v-model="form.send_reply" 
                                 type="text" 
-                                class="flex-grow bg-white/5 border-2 border-white/30 focus:border-yellow-300 rounded-xl px-4 py-3 text-white placeholder-white/60 font-medium transition-all duration-300" 
+                                class="flex-grow bg-white/5 border-2 border-white/30 focus:border-yellow-300 rounded-xl p-3 text-white placeholder-white/60 font-medium transition-all duration-300" 
                                 placeholder="💭 Type your reply here..." 
                             />
                             <button 
                                 type="submit" 
-                                class="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black p-3 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-pink-500/50 min-w-[50px]"
+                                class="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-black p-3 rounded-xl transition-all duration-300 transform hover:scale-110 min-w-[50px]"
                                 :disabled="loading.send_reply"
                             >
                                 <span v-if="loading.send_reply" class="loading loading-spinner loading-sm"></span>
                                 <span v-else class="text-xl">🚀</span>
                             </button>
                         </div>
-                        <InputLabel labelName="send_reply" />
+                        <InputLabel labelName="send_reply" :autoHide="true" :autoHideDuration="2000" />
                     </div>
                 </div>
             </form>

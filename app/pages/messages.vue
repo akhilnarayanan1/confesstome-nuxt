@@ -14,14 +14,14 @@
                     <!-- Chat List -->
                     <div class="space-y-6">
                         <!-- Empty State -->
-                        <div v-if="!messageData || messageData.length === 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl p-16 text-center">
+                        <div v-if="!messageData || messageData.length === 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 p-16 text-center">
                             <div class="text-6xl mb-4">👻</div>
                             <div class="text-2xl font-black mb-2 text-white/80">No chats yet!</div>
                             <div class="text-white/60">Start some anonymous conversations to see them here</div>
                         </div>
                         
                         <!-- For Sent Messages or when no received messages separation needed -->
-                        <div v-else-if="sourceType === 'from'" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
+                        <div v-else-if="sourceType === 'from'" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 overflow-hidden">
                             <div class="p-6 border-b border-white/10">
                                 <h3 class="text-lg font-black text-yellow-300 flex items-center gap-2">
                                     <span class="text-2xl">📤</span>
@@ -39,7 +39,7 @@
                                 >
                                     <div class="flex items-center gap-4">
                                         <div 
-                                            class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-white/30 group-hover:border-yellow-300/50 transition-all duration-300 shadow-lg"
+                                            class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-white/30 group-hover:border-yellow-300/50 transition-all duration-300"
                                             :style="{'background-color': message.fakecolor}"
                                         ></div>
                                         
@@ -72,7 +72,7 @@
                         <!-- For Received Messages - Two Sections -->
                         <div v-else class="space-y-6">
                             <!-- Interactive Chats (Verified → Verified) -->
-                            <div v-if="verifiedMessages.length > 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-green-300/50 shadow-2xl overflow-hidden">
+                            <div v-if="verifiedMessages.length > 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-green-300/50 overflow-hidden">
                                 <div class="p-6 border-b border-white/10">
                                     <h3 class="text-lg font-black text-green-300 flex items-center gap-2">
                                         <span class="text-2xl">💬</span>
@@ -91,7 +91,7 @@
                                     >
                                         <div class="flex items-center gap-4">
                                             <div 
-                                                class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-green-300/30 group-hover:border-green-300/50 transition-all duration-300 shadow-lg"
+                                                class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-green-300/30 group-hover:border-green-300/50 transition-all duration-300"
                                                 :style="{'background-color': message.fakecolor}"
                                             ></div>
                                             
@@ -122,7 +122,7 @@
                             </div>
 
                             <!-- Read-Only Messages (Anonymous → Verified) -->
-                            <div v-if="anonymousMessages.length > 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-orange-300/50 shadow-2xl overflow-hidden">
+                            <div v-if="anonymousMessages.length > 0" class="bg-white/10 backdrop-blur-lg rounded-3xl border border-orange-300/50 overflow-hidden">
                                 <div class="p-6 border-b border-white/10">
                                     <h3 class="text-lg font-black text-orange-300 flex items-center gap-2">
                                         <span class="text-2xl">👁️</span>
@@ -141,7 +141,7 @@
                                     >
                                         <div class="flex items-center gap-4">
                                             <div 
-                                                class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-orange-300/30 group-hover:border-orange-300/50 transition-all duration-300 shadow-lg"
+                                                class="rounded-full min-w-[48px] min-h-[48px] flex-shrink-0 border-3 border-orange-300/30 group-hover:border-orange-300/50 transition-all duration-300"
                                                 :style="{'background-color': message.fakecolor}"
                                             ></div>
                                             

@@ -9,7 +9,7 @@
             </div>
 
             <!-- Chat List Skeleton -->
-            <div class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl border border-white/20 overflow-hidden">
                 <div class="p-6 border-b border-white/10">
                     <div class="h-6 bg-white/20 rounded-xl w-48 animate-pulse"></div>
                 </div>
