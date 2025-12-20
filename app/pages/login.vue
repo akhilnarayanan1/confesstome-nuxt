@@ -6,7 +6,7 @@
         <div class="mb-6 text-center text-white/90">Don't have an account?  <NuxtLink to="/signup" class="font-bold text-yellow-300 hover:text-yellow-200 transition-colors" replace>Create your account</NuxtLink>, it takes less than a minute</div>
 
         <form id="formLoginAccount" @submit.prevent="loginAccount">
-          <div class="form-control">
+          <div class="form-control mb-4">
             <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
               <span class="text-xl opacity-70">📧</span>
               <input v-model="form.login_email" type="email" placeholder="Enter your e-mail" class="grow bg-transparent" />
@@ -14,7 +14,7 @@
             <InputLabel labelName="login_email"/>
           </div>
 
-          <div class="form-control">
+          <div class="form-control mb-4">
             <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
               <span class="text-xl opacity-70">🔒</span>
               <input autocomplete="false" v-model="form.login_password" type="password" placeholder="Enter password" class="grow bg-transparent" />

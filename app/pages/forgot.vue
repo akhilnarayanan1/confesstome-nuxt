@@ -6,7 +6,7 @@
         <div class="mb-6 text-center text-white/90">Enter the e-mail associated with your account</div>
 
         <form id="formForgotPassword" @submit.prevent="forgotPassword">
-          <div class="form-control">
+          <div class="form-control mb-4">
             <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
               <span class="text-xl opacity-70">📧</span>
               <input v-model="form.forgot_email" type="email" placeholder="Enter your e-mail" class="grow bg-transparent" />

@@ -45,7 +45,7 @@
         </div>
 
         <form id="formResetPassword" @submit.prevent="resetPassword">
-          <div class="form-control">
+          <div class="form-control mb-4">
             <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
               <span class="text-xl opacity-70">🔒</span>
               <input v-model="form.reset_password" type="password" placeholder="Choose a password" class="grow bg-transparent" autocomplete="false" />
@@ -53,7 +53,7 @@
             <InputLabel labelName="reset_password"/>
           </div>
 
-          <div class="form-control">
+          <div class="form-control mb-4">
             <label class="input input-bordered flex items-center gap-2 border-2 border-white/30 bg-white/5 hover:border-white/50 focus-within:border-yellow-300 rounded-2xl">
               <span class="text-xl opacity-70">🔒</span>
               <input v-model="form.reset_confirm_password" type="password" placeholder="Confirm your password" class="grow bg-transparent" autocomplete="false" />
