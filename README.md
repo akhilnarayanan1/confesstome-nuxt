@@ -28,13 +28,13 @@ npm install
 
 2. Set up Firebase environment variables in `.env`:
 ```env
-FIREBASE_API_KEY=your_api_key
-FIREBASE_AUTH_DOMAIN=your_auth_domain
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_storage_bucket
-FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-FIREBASE_APP_ID=your_app_id
-FIREBASE_MEASUREMENT_ID=your_measurement_id
+FB_API_KEY=your_api_key
+FB_AUTH_DOMAIN=your_auth_domain
+FB_PROJECT_ID=your_project_id
+FB_STORAGE_BUCKET=your_storage_bucket
+FB_MESSAGING_SENDER_ID=your_sender_id
+FB_APP_ID=your_app_id
+FB_MEASUREMENT_ID=your_measurement_id
 GOOGLE_APPLICATION_CREDENTIALS=service-account.json
 BASE_URL=confessto.me
 APP_NAME=ConfessTo.Me
@@ -126,6 +126,35 @@ confesstome-nuxt/
 - `npm run generate` - Generate static site
 - `npm run preview` - Preview production build
 - `npm run deploy-hosting` - Deploy to Firebase Hosting
+
+## Production (Firebase App Hosting)
+
+This project deploys via Firebase App Hosting with automatic Git-connected rollouts.
+
+### Push secrets to Firebase Secret Manager
+
+Run each command and paste the value when prompted:
+
+```bash
+firebase apphosting:secrets:set fb_api_key --project <your-project-id>
+firebase apphosting:secrets:set fb_auth_domain --project <your-project-id>
+firebase apphosting:secrets:set fb_project_id --project <your-project-id>
+firebase apphosting:secrets:set fb_storage_bucket --project <your-project-id>
+firebase apphosting:secrets:set fb_messaging_sender_id --project <your-project-id>
+firebase apphosting:secrets:set fb_app_id --project <your-project-id>
+firebase apphosting:secrets:set fb_measurement_id --project <your-project-id>
+```
+
+For the Firebase Admin SDK (required for SSR auth), store the service account key as a secret:
+
+```bash
+firebase apphosting:secrets:set --force --data-file service-account.json google_app_credentials --project <your-project-id>
+firebase apphosting:secrets:grantaccess google_app_credentials --backend <your-backend-id> --project <your-project-id>
+```
+
+> Only needs to be done once (or when values change).
+>
+> The secret name must be lowercase — `google_app_credentials` maps to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable via `apphosting.yaml`.
 
 ## 📄 License
 

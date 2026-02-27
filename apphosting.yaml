@@ -1,0 +1,45 @@
+runConfig:
+  runtime: nodejs22
+
+env:
+  - variable: FB_API_KEY
+    secret: fb_api_key
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_AUTH_DOMAIN
+    secret: fb_auth_domain
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_PROJECT_ID
+    secret: fb_project_id
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_STORAGE_BUCKET
+    secret: fb_storage_bucket
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_MESSAGING_SENDER_ID
+    secret: fb_messaging_sender_id
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_APP_ID
+    secret: fb_app_id
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: FB_MEASUREMENT_ID
+    secret: fb_measurement_id
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: GOOGLE_APPLICATION_CREDENTIALS
+    secret: google_app_credentials
+    availability:
+      - BUILD
+      - RUNTIME
+
